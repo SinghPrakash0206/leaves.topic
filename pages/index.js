@@ -22,7 +22,9 @@ const Index = (props) => (
 Index.getInitialProps = async function() {
   const res = await fetch('http://leaves.anant.us:82/api/tags?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw')
   const data = await res.json()
-  console.log(data)
+  for (var i = 0; i < data.length; i++) {
+  	data[i]['tagSlug'] = data[i].label.split('.').join('-')
+  }
   return {
     tags: data
   }

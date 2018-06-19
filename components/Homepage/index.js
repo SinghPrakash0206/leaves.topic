@@ -18,7 +18,7 @@ class Homepage extends React.Component {
 			<div>
 				<ul className="tag-list">
 					{this.props.tags.map((tag, index) => (
-						<li key={tag.id}><Link href={`/topic?tag=${tag.slug}`}><a>{tag.label}</a></Link></li>
+						<li key={tag.id}><Link href={`/topic?tag=${tag.tagSlug}`}><a>{tag.label}</a></Link></li>
 					))}
 				</ul>
 

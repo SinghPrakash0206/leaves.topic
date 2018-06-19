@@ -12,7 +12,9 @@ const Topic = withRouter((props) => (
 ))
 
 Topic.getInitialProps = async function(context) {
-	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&limit=12&order=asc&page=1&sort=created&tags='+context.query.tag)
+	console.log(context.query.tag)
+	const queryTag = context.query.tag.split('-').join('.')
+	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&limit=12&order=asc&page=1&sort=created&tags=' + queryTag)
 
 	const data = await res.json();
 	return {
