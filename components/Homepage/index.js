@@ -1,26 +1,54 @@
 import React from 'react'
 import Link from 'next/link'
+import { Search, Grid, Header } from 'semantic-ui-react'
+import _ from 'lodash'
+import Router from 'next/router'
+
 
 class Homepage extends React.Component {
 
 	constructor(props){
 		super(props)
-		// this.handleSubmit = this.handleChange.bind(this);
+		this.state = {
+			results: this.props.tags,
+			isLoading: false
+		}
+
 	}
 
-	// handleChange(e){
-	// 	console.log(e.target.value);
-	// 	console.log('hi');
-	// }
+	componentWillMount() {
+		this.resetComponent()
+	}
+
+	resetComponent = () => this.setState({ isLoading: false, results: [], value: '' })
+
+	handleResultSelect = (e, { result }) => {
+		this.setState({ value: result.title })
+		Router.push(`/topic?tag=${result.tagslug}`)
+	}
+
+	handleSearchChange = (e, { value }) => {
+		this.setState({ isLoading: true, value })
+
+		setTimeout(() => {
+			if (this.state.value.length < 1) return this.resetComponent()
+
+			const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+			const isMatch = result => re.test(result.title)
+
+			this.setState({
+				isLoading: false,
+				results: _.filter(this.props.tags, isMatch),
+			})
+		}, 300)
+	}
+
 
 	render(props){
+		const { isLoading, value, results } = this.state
 		return(
 			<div>
-				<ul className="tag-list">
-					{this.props.tags.map((tag, index) => (
-						<li key={tag.id}><Link href={`/topic?tag=${tag.tagSlug}`}><a>{tag.label}</a></Link></li>
-					))}
-				</ul>
+				<Search loading={isLoading} onResultSelect={this.handleResultSelect} onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })} results={results} value={value} {...this.props} />
 
 				<style jsx>{`
 					.tag-list{
