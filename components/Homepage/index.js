@@ -47,10 +47,17 @@ class Homepage extends React.Component {
 	render(props){
 		const { isLoading, value, results } = this.state
 		return(
-			<div>
-				<Search loading={isLoading} onResultSelect={this.handleResultSelect} onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })} results={results} value={value} {...this.props} />
+			<div className="home-container">
+				<div className="home-label">(tags) => topics</div>
+				<div className="home-search-input">
+					<Search loading={isLoading} size="huge" onResultSelect={this.handleResultSelect} onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })} results={results} value={value} {...this.props} />
+				</div>
 
 				<style jsx>{`
+					.home-container {
+				  		text-align: center;	
+				  		padding: 100px 0px;					
+					}
 					.tag-list{
 						margin: 0;
 						padding: 0;
@@ -59,6 +66,19 @@ class Homepage extends React.Component {
 						list-style-type: none;
 						display: inline-block;
 						padding: 4px;
+					}
+					.home-search-input {
+						display: inline-block;
+					}
+					.home-search-input {
+				  		text-align: center;
+					}
+					.home-label {
+						font-family: 'Montserrat', sans-serif;
+						font-size: 40px;
+						font-weight: 700;
+						display: block;
+ 						line-height: 2em;
 					}
 				`}</style>
 			</div>
