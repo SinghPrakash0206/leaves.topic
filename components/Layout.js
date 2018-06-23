@@ -8,11 +8,16 @@ const Layout = (props) => (
 		<meta charSet="utf-8"/>
 		<meta name="author" content="Anant team | anant.us"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet"/>
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Roboto+Mono:400,500" rel="stylesheet"/>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"/>
 	    </Head>
 		<Header/>
-		{props.children}
+			{props.children}
+		<style jsx>{`
+			body {
+				background-color: #fafafa;
+			}
+		`}</style>
 	</div>
 )
 

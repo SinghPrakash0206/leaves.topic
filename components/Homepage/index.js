@@ -56,7 +56,8 @@ class Homepage extends React.Component {
 				<style jsx>{`
 					.home-container {
 				  		text-align: center;	
-				  		padding: 100px 0px;					
+				  		padding: 100px 0px;	
+				  		height: 100vh;				
 					}
 					.tag-list{
 						margin: 0;
