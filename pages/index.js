@@ -24,7 +24,7 @@ Index.getInitialProps = async function() {
   const data = await res.json()
   for (var i = 0; i < data.length; i++) {
   	data[i]['tagslug'] = data[i].label.split('.').join('-')
-  	data[i]['title'] = data[i].label.split('.').join('-')
+  	data[i]['title'] = data[i].label.split('.').join(' ')
   }
   return {
     tags: data

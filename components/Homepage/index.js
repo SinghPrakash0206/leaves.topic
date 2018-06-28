@@ -24,7 +24,7 @@ class Homepage extends React.Component {
 
 	handleResultSelect = (e, { result }) => {
 		this.setState({ value: result.title })
-		Router.push(`/topic?tag=${result.tagslug}`)
+		Router.push(`/topic/${result.tagslug}`)
 	}
 
 	handleSearchChange = (e, { value }) => {
