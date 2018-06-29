@@ -12,17 +12,14 @@ app.prepare()
 
     server.get('/topic/:tag', (req, res) => {
 
-        // const parsedUrl = parse(req.url, true)
-        // const { pathname, query } = parsedUrl
-        // console.log('#########################')
-        // console.log(parsedUrl)
-        // console.log('#########################')
-        // console.log(pathname)
-        // console.log('#########################')
-        // console.log(query)
-
         const actualPage = '/topic'
         const queryParams = { tag: req.params.tag } 
+        app.render(req, res, actualPage, queryParams)
+    })
+
+    server.get('/topic/:tag/page/:page_no', (req, res) => {
+        const actualPage = '/topic'
+        const queryParams = { tag: req.params.tag,page_no: req.params.page_no } 
         app.render(req, res, actualPage, queryParams)
     })
 

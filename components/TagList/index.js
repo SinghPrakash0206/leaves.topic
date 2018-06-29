@@ -1,6 +1,7 @@
 import React from 'react'
 import fetch from 'isomorphic-unfetch'
 import { Grid, Image, Card, Icon, Popup, Pagination } from 'semantic-ui-react'
+import Router from 'next/router'
 
 class TagList extends React.Component {
 
@@ -9,19 +10,26 @@ class TagList extends React.Component {
 		this.state = {
 			topicList: this.props.list,
 			activeTag: this.props.tag,
+			queryTag: this.props.queryTag,
 			activePage: this.props.activePage,
-			linksCunt: this.props.linksCunt
+			linksCunt: this.props.linksCunt,
+			pageCount: 1
 		}
 
 	}
 
+	componentWillMount() {
+		this.setState({ pageCount: (Math.ceil(this.props.linksCunt/20)) })
+	}
+
 	handlePaginationChange = (e, { activePage }) => {
 		this.setState({ activePage })
-		console.log(activePage)
+		console.log(this.state.queryTag)
+		Router.push(`/topic/${this.state.queryTag}/page/${activePage}`)
 	}
 
 	render(props){
-		const { topicList, activeTag, activePage, linksCunt } = this.state
+		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag } = this.state
 		return(
 			<div>
 				<Grid container>
@@ -44,9 +52,11 @@ class TagList extends React.Component {
 							</Grid.Column>
 						))}
 					</Grid.Row>
-					<div className="pagination">
-						<Pagination defaultActivePage={activePage} totalPages={linksCunt} onPageChange={this.handlePaginationChange}/>
-					</div>
+					{(() => {
+						if(pageCount > 1) {
+							return <div className="pagination" ><Pagination defaultActivePage={activePage} totalPages={pageCount} onPageChange={this.handlePaginationChange}/></div>
+						}
+					})()}
 				</Grid>	
 				<style jsx>{`
 					.topic-label {
