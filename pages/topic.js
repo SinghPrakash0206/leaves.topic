@@ -1,6 +1,6 @@
 import Layout from '../components/Layout'
 import { withRouter } from 'next/router'
-import TagList from '../components/TagList/'
+import CardList from '../components/CardList/'
 import Link from 'next/link'
 
 
@@ -8,7 +8,7 @@ const Topic = withRouter((props) => (
 	<div>
 		<Link href="/"><a>Home</a></Link>
 		<Layout title={`${props.seoTitle} topics`}>
-			<TagList list={props.tagList} tag={props.tagName} queryTag={props.queryTag} linksCunt={props.totalLinks} activePage={props.activePage}/>
+			<CardList list={props.tagList} tag={props.tagName} queryTag={props.queryTag} linksCunt={props.totalLinks} activePage={props.activePage}/>
 		</Layout>
 	</div>
 ))

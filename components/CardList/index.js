@@ -2,8 +2,9 @@ import React from 'react'
 import fetch from 'isomorphic-unfetch'
 import { Grid, Image, Card, Icon, Popup, Pagination } from 'semantic-ui-react'
 import Router from 'next/router'
+import Link from 'next/link'
 
-class TagList extends React.Component {
+class CardList extends React.Component {
 
 	constructor(props){
 		super(props)
@@ -47,7 +48,7 @@ class TagList extends React.Component {
 										</div>
 										<Image src={topic.preview_picture} />
 									</div>
-									<a href={topic.url} target="_blank"><div className="topic-content">{topic.title}</div></a>
+									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`}><a><div className="topic-content">{topic.title}</div></a></Link>
 								</div>
 							</Grid.Column>
 						))}
@@ -134,4 +135,4 @@ class TagList extends React.Component {
 }
 
 
-export default TagList
+export default CardList

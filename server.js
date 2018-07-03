@@ -19,7 +19,13 @@ app.prepare()
 
     server.get('/topic/:tag/page/:page_no', (req, res) => {
         const actualPage = '/topic'
-        const queryParams = { tag: req.params.tag,page_no: req.params.page_no } 
+        const queryParams = { tag: req.params.tag, page_no: req.params.page_no } 
+        app.render(req, res, actualPage, queryParams)
+    })
+
+    server.get('/leaves/:id', (req, res) => {
+        const actualPage = '/leaves'
+        const queryParams = { id: req.params.id } 
         app.render(req, res, actualPage, queryParams)
     })
 
