@@ -29,6 +29,12 @@ app.prepare()
         app.render(req, res, actualPage, queryParams)
     })
 
+    server.get('/bundle/:idsString', (req, res) => {
+        const actualPage = '/bundle'
+        const queryParams = { ids: req.params.idsString } 
+        app.render(req, res, actualPage, queryParams)
+    })
+
     server.get('*', (req, res) => {
         return handle(req, res)
     })

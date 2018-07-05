@@ -3,11 +3,12 @@ import { withRouter } from 'next/router'
 import { Grid, Image, Card, Icon, Popup, Pagination } from 'semantic-ui-react'
 import fetch from 'isomorphic-unfetch'
 import Parser from 'html-react-parser';
-import { render } from 'react-dom';
+import Link from 'next/link'
 
 
 const Leaves = withRouter((props) => (
 	<div>
+		<Link href="/"><a>Home</a></Link>
 		<Layout title={props.leaves.title}>
 				<Grid container>
 					<Grid.Row>
@@ -43,7 +44,7 @@ Leaves.getInitialProps = async function(context){
 	const data = await res.json()
 
 	return {
-		leaves: data,
+		leaves: data
 	}
 }
 
