@@ -13,11 +13,14 @@
     "@zeit/next-sass": "^0.2.0",
     "express": "^4.16.3",
     "html-react-parser": "^0.4.6",
+    "htmlparser2": "^3.9.2",
     "isomorphic-unfetch": "^2.0.0",
     "next": "^6.1.0",
     "node-sass": "^4.9.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-highlight": "^0.12.0",
+    "react-html-parser": "^2.0.2",
     "semantic-ui-react": "^0.81.1"
   }
 }

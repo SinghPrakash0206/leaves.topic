@@ -4,6 +4,7 @@ import { Grid, Image, Card, Icon, Popup, Pagination } from 'semantic-ui-react'
 import fetch from 'isomorphic-unfetch'
 import Parser from 'html-react-parser';
 import Link from 'next/link'
+import Highlight from 'react-highlight'
 
 
 const Leaves = withRouter((props) => (
@@ -19,6 +20,10 @@ const Leaves = withRouter((props) => (
 										replace: function(domNode) {
 											if (domNode.attribs && domNode.attribs.src) {
 												return <img src={domNode.attribs.src} style={{maxWidth:'100%'}}/>
+											}
+											if (domNode.attribs && domNode.name === 'pre') {
+												console.log(domNode)
+												return <Highlight><pre>{domNode.children[0].data}</pre></Highlight>
 											}
 										}
 									}
