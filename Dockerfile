@@ -16,4 +16,4 @@ RUN \
 EXPOSE 3000
 
 # The command to run our app when the container is run
-CMD ["next", ""]
+CMD ["sh", "-c", "node server.js"]
