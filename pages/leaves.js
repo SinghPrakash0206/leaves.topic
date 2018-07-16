@@ -10,7 +10,7 @@ import Highlight from 'react-highlight'
 const Leaves = withRouter((props) => (
 	<div>
 		<Link href="/"><a>Home</a></Link>
-		<Layout title={props.leaves.title}>
+		<Layout title={props.leaves.title} description={props.leaves.title}>
 				<Grid container>
 					<Grid.Row>
 						<Grid.Column>
@@ -49,7 +49,7 @@ Leaves.getInitialProps = async function(context){
 	const data = await res.json()
 
 	return {
-		leaves: data
+		leaves: data,
 	}
 }
 

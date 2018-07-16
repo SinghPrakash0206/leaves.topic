@@ -4,10 +4,16 @@ import Head from 'next/head'
 const Layout = (props) => (
 	<div>	
 	    <Head>
-		<title>{ props.title }</title>
-		<meta charSet="utf-8"/>
+		<title>{ props.title } - Anant Leaves</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=contain"/>
 		<meta name="author" content="Anant team | anant.us"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="title" content={ props.title  + ' - Anant Leaves' }/>
+		<meta name="description" content={ props.description }/>
+		<meta property="og:title" content={ props.title  + ' - Anant Leaves' }/>
+		<meta property="og:description" content={ props.description }/>
+		<meta name="twitter:description" content={ props.description }/>
+
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Roboto+Mono:400,500" rel="stylesheet"/>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"/>
 		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css"/>

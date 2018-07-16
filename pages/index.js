@@ -4,7 +4,7 @@ import fetch from 'isomorphic-unfetch'
 
 const Index = (props) => (
 	<div>
-		<Layout title="Leaves Topic | Home">
+		<Layout title="Leaves Topic">
 		<div className="homepage">
 			<Homepage tags={props.tags}/>
 		</div>
