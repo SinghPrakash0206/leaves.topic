@@ -8,13 +8,13 @@ import Highlight from 'react-highlight'
 
 
 const Leaves = withRouter((props) => (
-	<div>
+	<div className="single-content">
 		<Link href="/"><a>Home</a></Link>
 		<Layout title={props.leaves.title} description={props.leaves.title}>
 				<Grid container>
 					<Grid.Row>
 						<Grid.Column>
-							<h2>{props.leaves.title}</h2>
+							<div className="content-title">{props.leaves.title}</div>
 							<div className="leaves-content">
 								{Parser(props.leaves.content,{
 										replace: function(domNode) {
@@ -34,8 +34,22 @@ const Leaves = withRouter((props) => (
 				</Grid>
 		</Layout>
 				<style jsx>{`
-					.leaves-content p{
-						font-size: 17px !important;
+					.single-content {
+						width: 800px;
+						margin: 0px auto;
+					}
+					.single-content .content-title{
+						font-family: 'Montserrat', sans-serif;
+						font-size: 3rem;
+						font-weight: 500;
+						line-height: 1.2em;
+						text-align: center;
+						padding: 20px;
+					}
+					.leaves-content{
+						font-size: 16px !important;
+						font-family: 'Questrial', sans-serif;
+						text-align: justify;
 					}
 				`}
 				</style>
