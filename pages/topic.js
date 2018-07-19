@@ -1,12 +1,13 @@
 import Layout from '../components/Layout'
 import { withRouter } from 'next/router'
 import CardList from '../components/CardList/'
+import TopicNavbar from '../components/Navbar/'
 import Link from 'next/link'
 
 
 const Topic = withRouter((props) => (
 	<div>
-		<Link href="/"><a>Home</a></Link>
+		<TopicNavbar/>
 		<Layout title={`${props.seoTitle}`} description={props.seoDesc}>
 			<CardList list={props.tagList} tag={props.tagName} queryTag={props.queryTag} linksCunt={props.totalLinks} activePage={props.activePage}/>
 		</Layout>

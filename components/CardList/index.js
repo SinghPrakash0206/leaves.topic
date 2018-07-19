@@ -48,7 +48,7 @@ class CardList extends React.Component {
 										</div>
 										<Image src={topic.preview_picture} />
 									</div>
-									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`}><a><div className="topic-content">{topic.title}</div></a></Link>
+									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`}><a target="_blank"><div className="topic-content">{topic.title}</div></a></Link>
 								</div>
 							</Grid.Column>
 						))}
@@ -62,11 +62,15 @@ class CardList extends React.Component {
 				<style jsx>{`
 					.topic-label {
 						padding: 20px;
-						font-size: 25px;
+						font-size: 40px;
 						font-weight: 700;
 						font-family: 'Roboto Mono', monospace;
 						color: #2d2c2c;
-						opacity: 0.8
+						opacity: 0.8;
+						width: 100%;
+						padding: 50px 10px;
+						letter-spacing: -2px;
+						word-spacing: -12px;
 					}
 					.topic-card {
 						position: relative;

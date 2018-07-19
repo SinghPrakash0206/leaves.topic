@@ -5,11 +5,13 @@ import fetch from 'isomorphic-unfetch'
 import Parser from 'html-react-parser';
 import Link from 'next/link'
 import Highlight from 'react-highlight'
+import TopicNavbar from '../components/Navbar/'
 
 
 const Leaves = withRouter((props) => (
-	<div className="single-content">
-		<Link href="/"><a>Home</a></Link>
+	<div>
+		<TopicNavbar/>
+		<div className="single-content">
 		<Layout title={props.leaves.title} description={props.leaves.title}>
 				<Grid container>
 					<Grid.Row>
@@ -19,7 +21,7 @@ const Leaves = withRouter((props) => (
 								{Parser(props.leaves.content,{
 										replace: function(domNode) {
 											if (domNode.attribs && domNode.attribs.src) {
-												return <img src={domNode.attribs.src} style={{maxWidth:'100%'}}/>
+												return <img src={domNode.attribs.src} style={{maxWidth:'100%',display:'block'}}/>
 											}
 											if (domNode.attribs && domNode.name === 'pre') {
 												console.log(domNode)
@@ -33,6 +35,7 @@ const Leaves = withRouter((props) => (
 					</Grid.Row>
 				</Grid>
 		</Layout>
+		</div>
 				<style jsx>{`
 					.single-content {
 						width: 800px;
