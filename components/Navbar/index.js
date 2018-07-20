@@ -16,7 +16,7 @@ class TopicNavbar extends Component {
 				<div className="nav">
 				<div className="nav-header">
 					<div className="nav-title">
-						<Link href="/"><a>Topic Pages</a></Link>
+						<i class="fa fa-leaf"></i><Link href="/"><a>Leaves</a></Link>
 					</div>
 					<div className="tag-title">
 						Tags
