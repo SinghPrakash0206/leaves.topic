@@ -1,0 +1,30 @@
+sudo: required
+
+language: node_js
+node_js:
+  - "node"
+
+services:
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.4.2
+
+#before_install:
+
+script:
+- docker build -t appleseed/leaves.topic .
+
+after_success:
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD";
+- if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker push appleseed/leaves.topic:release;
+  fi
+- if [ "$TRAVIS_BRANCH" == "dev" ]; then
+    docker push appleseed/leaves.topic:latest;
+  fi
+
+#- sudo rm /usr/local/bin/docker-compose
+#- curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+#- chmod +x docker-compose
+#- sudo mv docker-compose /usr/local/bin

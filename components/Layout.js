@@ -1,22 +1,31 @@
 import Header from './Header'
 import Head from 'next/head'
 
-const layoutStyle = {
-	margin: 20,
-	padding: 20,
-	border: '1px solid #eee'
-}
-
 const Layout = (props) => (
-	<div style={layoutStyle}>	
+	<div>	
 	    <Head>
-		<title>{ props.title }</title>
-		<meta charSet="utf-8"/>
-		<meta name="author" content="Mohd Danish Yusuf"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>{ props.title } - Anant Leaves</title>
+	    <meta httpEquiv="Content-Type" content="text/html; charset=utf-8"/>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=contain"/>
+		<meta name="author" content="Anant team | anant.us"/>
+		<meta name="title" content={ props.title  + ' - Anant Leaves' }/>
+		<meta name="description" content={ props.description }/>
+		<meta property="og:title" content={ props.title  + ' - Anant Leaves' }/>
+		<meta property="og:description" content={ props.description }/>
+		<meta name="twitter:description" content={ props.description }/>
+
+		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous" />
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Roboto+Mono:400,500|Questrial" rel="stylesheet"/>
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"/>
+		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css"/>
 	    </Head>
 		<Header/>
-		{props.children}
+			{props.children}
+		<style jsx>{`
+			body {
+				background-color: #fafafa;
+			}
+		`}</style>
 	</div>
 )
 
