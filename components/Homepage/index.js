@@ -48,7 +48,7 @@ class Homepage extends React.Component {
 		const { isLoading, value, results } = this.state
 		return(
 			<div className="home-container">
-				<div className="home-label"><i class="fa fa-leaf"></i>Leaves</div>
+				<div className="home-label"><i className="fa fa-leaf"></i>Leaves</div>
 				<div className="home-search-input">
 					<Search loading={isLoading} size="huge" onResultSelect={this.handleResultSelect} onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })} results={results} value={value} {...this.props} />
 				</div>
