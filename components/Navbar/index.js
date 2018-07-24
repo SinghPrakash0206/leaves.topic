@@ -1,17 +1,37 @@
 import Link from 'next/link';
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Input, Menu, Grid } from 'semantic-ui-react';
+import { Input, Menu, Grid, Button, Header, Image, Modal, Form } from 'semantic-ui-react';
 import fetch from 'isomorphic-unfetch'
 import axios from 'axios';
+
+const InputLeafModule = () => (
+	<Modal trigger={<span>Add Leaf</span>} dimmer={'blurring'}>
+		<Modal.Header>Add a Leaf</Modal.Header>
+		<Modal.Content>
+		<Modal.Description>
+			<Form>
+				<Form.Field>
+					<label>URL</label>
+					<input type="url" placeholder='Paste the URL' />
+				</Form.Field>
+				<Button type='submit'>Add</Button>
+			</Form>
+			</Modal.Description>
+		</Modal.Content>
+	</Modal>
+)
 
 class TopicNavbar extends Component {
 	state = { 
 		activeItem: 'home',
 		isTagBoxOpen: false,
 		frezzArray: [],
-		tagArray: []
+		tagArray: [],
+		open: false
 	}
+
+	show = dimmer => () => this.setState({ dimmer, open: true })
 
 	handleTagBox = async () => {
 		let body_dom = document.body.style
@@ -68,6 +88,7 @@ class TopicNavbar extends Component {
 		console.log(tagListBoxClass)
 		return (
 			<div className="topic-navbar">
+			
 				<div className="nav">
 				<div className="nav-header">
 					<div className="nav-title">
@@ -86,7 +107,7 @@ class TopicNavbar extends Component {
 				</div>
 				<input type="checkbox" id="nav-check"/>
 				<div className="nav-links">
-					<a href="#" target="_blank">Add Leaf</a>
+					<a><InputLeafModule /></a>
 					<a href="#" target="_blank">Login</a>
 					<a href="#" target="_blank">Logout</a>
 				</div>
@@ -192,6 +213,10 @@ class TopicNavbar extends Component {
 						padding: 50px;
 					}
 
+					.ui.modal {
+						top: 10% !important;
+					}
+
 					.tag-lists .ui .row .column {
 						padding: 5px !important;
 					}
@@ -243,6 +268,7 @@ class TopicNavbar extends Component {
 							margin-right: 20px;
 							cursor: pointer;
 						}
+
 						.nav > .nav-btn > label > span {
 							display: block;
 							width: 25px;
