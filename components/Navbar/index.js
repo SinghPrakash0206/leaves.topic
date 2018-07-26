@@ -5,22 +5,6 @@ import { Input, Menu, Grid, Button, Header, Image, Modal, Form } from 'semantic-
 import fetch from 'isomorphic-unfetch'
 import axios from 'axios';
 
-const InputLeafModule = () => (
-	<Modal trigger={<span>Add Leaf</span>} dimmer={'blurring'}>
-		<Modal.Header>Add a Leaf</Modal.Header>
-		<Modal.Content>
-		<Modal.Description>
-			<Form>
-				<Form.Field>
-					<label>URL</label>
-					<input type="url" placeholder='Paste the URL' />
-				</Form.Field>
-				<Button type='submit'>Add</Button>
-			</Form>
-			</Modal.Description>
-		</Modal.Content>
-	</Modal>
-)
 
 class TopicNavbar extends Component {
 	state = { 
@@ -28,10 +12,25 @@ class TopicNavbar extends Component {
 		isTagBoxOpen: false,
 		frezzArray: [],
 		tagArray: [],
-		open: false
+		modalBoxOpen: false,
+		urlToAdd: ''
 	}
 
 	show = dimmer => () => this.setState({ dimmer, open: true })
+
+	openModalBox = () => {
+		this.setState({ modalBoxOpen: true })
+	}
+
+	closeModalBox = () => {
+		this.setState({ modalBoxOpen: false })
+	}
+
+	clickOutModalBox = (e) => {
+		if(e.target.id === 'outer') {
+			this.setState({ modalBoxOpen: false })			
+		}
+	}
 
 	handleTagBox = async () => {
 		let body_dom = document.body.style
@@ -67,6 +66,41 @@ class TopicNavbar extends Component {
 
 	}
 
+	setURLToState = (e) => {
+		this.setState({urlToAdd:e.target.value})
+	}
+
+	addLeafToDB = async () => {
+		const url = this.state.urlToAdd
+
+
+		axios({
+			method: 'post',
+			url: 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
+			data: {
+				url: url
+			},
+			headers: { 'content-type': 'application/x-www-form-urlencoded' }
+		})
+		.then(function (response) {
+			console.log(response);
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+		// axios.post('http://leaves.anant.us:82/api/entries', {
+		// 	access_token: 'N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
+		// 	url: url
+		// })
+		// .then(function (response) {
+		// 	console.log(response);
+		// })
+		// .catch(function (error) {
+		// 	console.log(error);
+		// });
+	}
+
 	searchTag = (e) => {
 		// this.setState({tagArray:this.state.frezzArray})
 		console.log(e.target.value)
@@ -83,12 +117,25 @@ class TopicNavbar extends Component {
 	}
 
 	render() {
-		const { activeItem } = this.state
+		const { activeItem, modalBoxOpen } = this.state
 		let tagListBoxClass = this.state.isTagBoxOpen ? 'open-tag-box' : 'close-tag-box'
 		console.log(tagListBoxClass)
 		return (
 			<div className="topic-navbar">
-			
+			{modalBoxOpen ? 
+				<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
+					<div className="add-leaf-modal">
+						<Form>
+							<Form.Field>
+							<label>URL</label>
+								<input type="url" onChange={this.setURLToState.bind(this)} placeholder='Paste the URL' />
+							</Form.Field>
+							<Button type='submit' onClick={this.addLeafToDB}>Add</Button>
+							<Button type='submit' onClick={this.closeModalBox}>Close</Button>
+						</Form>
+					</div>
+				</div>
+			: ''}
 				<div className="nav">
 				<div className="nav-header">
 					<div className="nav-title">
@@ -107,14 +154,14 @@ class TopicNavbar extends Component {
 				</div>
 				<input type="checkbox" id="nav-check"/>
 				<div className="nav-links">
-					<a><InputLeafModule /></a>
+					<a className="add-leaf-btn" onClick={this.openModalBox}>Add</a>
 					<a href="#" target="_blank">Login</a>
 					<a href="#" target="_blank">Logout</a>
 				</div>
 				</div>
 				<div className={'tag-lists ' + tagListBoxClass}>
 					<div className="close-tag-box" onClick={this.closeTagBox}>X</div>
-					<Input size='mini' icon='search' onChange={this.searchTag.bind(this)} placeholder='Search...' />
+						<Input size='mini' type="url" required icon='search' onChange={this.searchTag.bind(this)} placeholder='Search...' />
 					<br/><br/>
 					<Grid>
 						<Grid.Row columns={6}>
@@ -213,10 +260,6 @@ class TopicNavbar extends Component {
 						padding: 50px;
 					}
 
-					.ui.modal {
-						top: 10% !important;
-					}
-
 					.tag-lists .ui .row .column {
 						padding: 5px !important;
 					}
@@ -247,6 +290,31 @@ class TopicNavbar extends Component {
 					.space-divider {
 						height: 100px;
 						width: 100%;
+					}
+
+					.add-leaf-btn {
+						cursor: pointer;
+					}
+
+					.add-leaf-modal {
+						border: 1px solid #eee;
+						border-radius: 10px;
+						max-width: 500px;
+						margin: 0px auto;
+						background-color: #fff;
+						padding: 20px;
+					}
+
+					.add-leaf-outer {
+						position: fixed; 
+						z-index: 99;
+						padding-top: 100px; 
+						left: 0;
+						top: 0;
+						width: 100%; 
+						height: 100%;
+						overflow: auto;
+						background-color: rgba(0,0,0,0.4);
 					}
 
 					@media (max-width:600px) {
