@@ -73,25 +73,71 @@ class TopicNavbar extends Component {
 	addLeafToDB = async () => {
 		const url = this.state.urlToAdd
 
+		var data = {
+			"url": String(url)
+		}
 
-		axios({
-			method: 'post',
-			url: 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
-			data: {
-				url: url
-			},
-			headers: { 'content-type': 'application/x-www-form-urlencoded' }
-		})
-		.then(function (response) {
-			console.log(response);
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
+		console.log(data)
+
+		// await fetch('http://leaves.anant.us:82/api/entries', {
+		// 	method: 'POST',
+		// 	mode: 'CORS',
+		// 	body: data,
+		// 	headers: {
+		// 		'Content-Type': 'application/x-www-form-urlencoded'
+		// 	}
+		// }).then(res => {
+		// 	console.log(res);
+		// }).catch(err => err);
+
+		// await axios({
+		// 	method: 'post',
+		// 	url: 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
+		// 	headers: { 'content-type': 'application/x-www-form-urlencoded' },
+		// 	// params: data,
+		// 	body: data
+		// })
+		// .then(function (response) {
+		// 	console.log(response);
+		// })
+		// .catch(function (error) {
+		// 	console.log(error);
+		// });
+
+		// axios('http://leaves.anant.us:82/api/entries', {
+		// 	method: 'GET',
+		// 	mode: 'no-cors',
+		// 	params: data,
+		// 	headers: {
+		// 	'Access-Control-Allow-Origin': '*',
+		// 	'Content-Type': 'application/json',
+		// 	},
+		// 	withCredentials: true,
+		// 	credentials: 'same-origin',
+		// })
+		// .then(function (response) {
+		// 	console.log(response);
+		// })
+		// .catch(function (error) {
+		// 	console.log(error);
+		// });
+
+
+		fetch('http://leaves.anant.us:82/api/entries', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data)
+})
 
 		// axios.post('http://leaves.anant.us:82/api/entries', {
 		// 	access_token: 'N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
-		// 	url: url
+		// 	url: url,
+		// 	headers: { 
+		// 		'Content-Type': 'application/json',
+		// 		'Access-Control-Allow-Origin': '*', 
+		// 	}
 		// })
 		// .then(function (response) {
 		// 	console.log(response);
