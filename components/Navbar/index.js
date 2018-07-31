@@ -70,81 +70,34 @@ class TopicNavbar extends Component {
 		this.setState({urlToAdd:e.target.value})
 	}
 
+	closeModalBoxAwait = () => {
+		setTimeout(this.setState({ modalBoxOpen: false }), 2000)
+	}
+
 	addLeafToDB = async () => {
 		const url = this.state.urlToAdd
 
 		var data = {
-			"url": String(url)
+		"url": url
 		}
 
-		console.log(data)
+		var xhttp = new XMLHttpRequest();
 
-		// await fetch('http://leaves.anant.us:82/api/entries', {
-		// 	method: 'POST',
-		// 	mode: 'CORS',
-		// 	body: data,
-		// 	headers: {
-		// 		'Content-Type': 'application/x-www-form-urlencoded'
-		// 	}
-		// }).then(res => {
-		// 	console.log(res);
-		// }).catch(err => err);
+		xhttp.open("POST", "http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		await xhttp.send("url="+url); 
 
-		// await axios({
-		// 	method: 'post',
-		// 	url: 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
-		// 	headers: { 'content-type': 'application/x-www-form-urlencoded' },
-		// 	// params: data,
-		// 	body: data
-		// })
-		// .then(function (response) {
-		// 	console.log(response);
-		// })
-		// .catch(function (error) {
-		// 	console.log(error);
-		// });
+		setTimeout(this.closeModalBoxAwait(), 2000)
+		
+		// xhttp.onreadystatechange = function() {
+		// console.log(this.status)
 
-		// axios('http://leaves.anant.us:82/api/entries', {
-		// 	method: 'GET',
-		// 	mode: 'no-cors',
-		// 	params: data,
-		// 	headers: {
-		// 	'Access-Control-Allow-Origin': '*',
-		// 	'Content-Type': 'application/json',
-		// 	},
-		// 	withCredentials: true,
-		// 	credentials: 'same-origin',
-		// })
-		// .then(function (response) {
-		// 	console.log(response);
-		// })
-		// .catch(function (error) {
-		// 	console.log(error);
-		// });
-
-
-		fetch('http://leaves.anant.us:82/api/entries', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(data)
-})
-
-		// axios.post('http://leaves.anant.us:82/api/entries', {
-		// 	access_token: 'N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw',
-		// 	url: url,
-		// 	headers: { 
-		// 		'Content-Type': 'application/json',
-		// 		'Access-Control-Allow-Origin': '*', 
-		// 	}
-		// })
-		// .then(function (response) {
-		// 	console.log(response);
-		// })
-		// .catch(function (error) {
-		// 	console.log(error);
-		// });
+		// this.closeMod();
+			
+		// // if (this.readyState == 4 && this.status == 200) {
+		 
+		// // }
+		// };
 	}
 
 	searchTag = (e) => {
