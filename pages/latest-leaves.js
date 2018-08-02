@@ -21,20 +21,21 @@ Topic.getInitialProps = async function(context) {
 	}else{
 		page_no = context.query.page_no
 	}
-	const queryTag = context.query.tag.split('-').join('.')
-	const seoTitle = context.query.tag.split('-').join(' ').replace(/\b\w/g, l => l.toUpperCase())
-	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&perPage=20&order=asc&page='+page_no+'&sort=created&tags=' + queryTag)
+	const queryTag = 'Latest Leaves'
+	const seoTitle = 'Lates Leaves | Ananr.us - Anant Leaves'
+	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&order=desc&page=1&sort=created&perPage=20&page='+page_no)
 
 	const data = await res.json();
 	return {
 		list: data._embedded.items,
-		tag: context.query.tag,
+		tag: queryTag,
 		seoTitle: seoTitle,
 		seoDesc: 'Resources list of the '+seoTitle,
 		linksCunt: data.total,
 		activePage: data.page,
 		queryTag: queryTag,
-		paginationURL: 'topic/'+context.query.tag
+		queryURL: 'topic'+queryTag,
+		paginationURL: 'latest-leaves'
 	}
 }
 

@@ -9,32 +9,33 @@ class CardList extends React.Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			topicList: this.props.list,
-			activeTag: this.props.tag,
-			queryTag: this.props.queryTag,
-			activePage: this.props.activePage,
-			linksCunt: this.props.linksCunt,
+			topicList: this.props.data.list,
+			activeTag: this.props.data.tag,
+			queryTag: this.props.data.queryTag,
+			activePage: this.props.data.activePage,
+			linksCunt: this.props.data.linksCunt,
+			paginationURL: this.props.data.paginationURL,
 			pageCount: 1
 		}
 
 	}
 
 	componentWillMount() {
-		this.setState({ pageCount: (Math.ceil(this.props.linksCunt/20)) })
+		this.setState({ pageCount: (Math.ceil(this.props.data.linksCunt/20)) })
 	}
 
 	handlePaginationChange = (e, { activePage }) => {
 		this.setState({ activePage })
 		console.log(this.state.queryTag)
-		Router.push(`/topic/${this.state.queryTag}/page/${activePage}`)
+		Router.push(`/${this.state.paginationURL}/page/${activePage}`)
 	}
 
 	render(props){
-		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag } = this.state
+		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL } = this.state
 		return(
 			<div>
 				<Grid container>
-				<div className="topic-label">{activeTag} topics</div>
+				<h2 className="topic-label">{activeTag} topics</h2>
 					<Grid.Row>
 						{topicList.map((topic, index) =>(
 							<Grid.Column mobile={16} tablet={8} computer={4} key={topic.id} >
@@ -61,14 +62,13 @@ class CardList extends React.Component {
 				</Grid>	
 				<style jsx>{`
 					.topic-label {
-						padding: 20px;
 						font-size: 40px;
 						font-weight: 700;
 						font-family: 'Roboto Mono', monospace;
 						color: #2d2c2c;
 						opacity: 0.8;
 						width: 100%;
-						padding: 50px 10px;
+						padding: 40px 0px 10px 10px;
 						letter-spacing: -2px;
 						word-spacing: -12px;
 					}
