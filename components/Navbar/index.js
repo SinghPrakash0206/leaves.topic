@@ -1,16 +1,35 @@
 import Link from 'next/link';
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Input, Menu, Grid } from 'semantic-ui-react';
+import { Input, Menu, Grid, Button, Header, Image, Modal, Form, Icon, Popup } from 'semantic-ui-react';
 import fetch from 'isomorphic-unfetch'
 import axios from 'axios';
+
 
 class TopicNavbar extends Component {
 	state = { 
 		activeItem: 'home',
 		isTagBoxOpen: false,
 		frezzArray: [],
-		tagArray: []
+		tagArray: [],
+		modalBoxOpen: false,
+		urlToAdd: ''
+	}
+
+	show = dimmer => () => this.setState({ dimmer, open: true })
+
+	openModalBox = () => {
+		this.setState({ modalBoxOpen: true })
+	}
+
+	closeModalBox = () => {
+		this.setState({ modalBoxOpen: false })
+	}
+
+	clickOutModalBox = (e) => {
+		if(e.target.id === 'outer') {
+			this.setState({ modalBoxOpen: false })			
+		}
 	}
 
 	handleTagBox = async () => {
@@ -47,6 +66,40 @@ class TopicNavbar extends Component {
 
 	}
 
+	setURLToState = (e) => {
+		this.setState({urlToAdd:e.target.value})
+	}
+
+	closeModalBoxAwait = () => {
+		setTimeout(this.setState({ modalBoxOpen: false }), 2000)
+	}
+
+	addLeafToDB = async () => {
+		const url = this.state.urlToAdd
+
+		var data = {
+		"url": url
+		}
+
+		var xhttp = new XMLHttpRequest();
+
+		xhttp.open("POST", "http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw", true);
+		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		await xhttp.send("url="+url); 
+
+		setTimeout(this.closeModalBoxAwait(), 2000)
+		
+		// xhttp.onreadystatechange = function() {
+		// console.log(this.status)
+
+		// this.closeMod();
+			
+		// // if (this.readyState == 4 && this.status == 200) {
+		 
+		// // }
+		// };
+	}
+
 	searchTag = (e) => {
 		// this.setState({tagArray:this.state.frezzArray})
 		console.log(e.target.value)
@@ -63,11 +116,25 @@ class TopicNavbar extends Component {
 	}
 
 	render() {
-		const { activeItem } = this.state
+		const { activeItem, modalBoxOpen } = this.state
 		let tagListBoxClass = this.state.isTagBoxOpen ? 'open-tag-box' : 'close-tag-box'
 		console.log(tagListBoxClass)
 		return (
 			<div className="topic-navbar">
+			{modalBoxOpen ? 
+				<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
+					<div className="add-leaf-modal">
+						<Form>
+							<Form.Field>
+							<label>URL</label>
+								<input type="url" onChange={this.setURLToState.bind(this)} placeholder='Paste the URL' />
+							</Form.Field>
+							<Button type='submit' onClick={this.addLeafToDB}>Add</Button>
+							<Button type='submit' onClick={this.closeModalBox}>Close</Button>
+						</Form>
+					</div>
+				</div>
+			: ''}
 				<div className="nav">
 				<div className="nav-header">
 					<div className="nav-title">
@@ -86,14 +153,15 @@ class TopicNavbar extends Component {
 				</div>
 				<input type="checkbox" id="nav-check"/>
 				<div className="nav-links">
-					<a href="#" target="_blank">Add Leaf</a>
+					<a className="add-leaf-btn" onClick={this.openModalBox}>Add</a>
 					<a href="#" target="_blank">Login</a>
 					<a href="#" target="_blank">Logout</a>
 				</div>
 				</div>
+
 				<div className={'tag-lists ' + tagListBoxClass}>
 					<div className="close-tag-box" onClick={this.closeTagBox}>X</div>
-					<Input size='mini' icon='search' onChange={this.searchTag.bind(this)} placeholder='Search...' />
+						<Input size='mini' type="url" required icon='search' onChange={this.searchTag.bind(this)} placeholder='Search...' />
 					<br/><br/>
 					<Grid>
 						<Grid.Row columns={6}>
@@ -224,6 +292,31 @@ class TopicNavbar extends Component {
 						width: 100%;
 					}
 
+					.add-leaf-btn {
+						cursor: pointer;
+					}
+
+					.add-leaf-modal {
+						border: 1px solid #eee;
+						border-radius: 10px;
+						max-width: 500px;
+						margin: 0px auto;
+						background-color: #fff;
+						padding: 20px;
+					}
+
+					.add-leaf-outer {
+						position: fixed; 
+						z-index: 99;
+						padding-top: 100px; 
+						left: 0;
+						top: 0;
+						width: 100%; 
+						height: 100%;
+						overflow: auto;
+						background-color: rgba(0,0,0,0.4);
+					}
+
 					@media (max-width:600px) {
 						.nav {
 							padding: 15px;
@@ -243,6 +336,7 @@ class TopicNavbar extends Component {
 							margin-right: 20px;
 							cursor: pointer;
 						}
+
 						.nav > .nav-btn > label > span {
 							display: block;
 							width: 25px;

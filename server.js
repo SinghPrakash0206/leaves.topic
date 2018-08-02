@@ -23,6 +23,12 @@ app.prepare()
         app.render(req, res, actualPage, queryParams)
     })
 
+    server.get('/latest-leaves/page/:page_no', (req, res) => {
+        const actualPage = '/latest-leaves'
+        const queryParams = { page_no: req.params.page_no } 
+        app.render(req, res, actualPage, queryParams)
+    })
+
     server.get('/leaves/:id', (req, res) => {
         const actualPage = '/leaves'
         const queryParams = { id: req.params.id } 

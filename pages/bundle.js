@@ -3,10 +3,12 @@ import Layout from '../components/Layout'
 import Link from 'next/link'
 import fetch from 'isomorphic-unfetch'
 import { Grid, Image, Card, Icon, Popup, Pagination } from 'semantic-ui-react'
+import TopicNavbar from '../components/Navbar/'
 
 const Bundle = withRouter((props) => (
     <div>
-        <Link href="/"><a>Home</a></Link>
+		<TopicNavbar/>
+		<br/>
         <Layout title="Bundle Topics">
             <Grid container>
                 <Grid.Row>
