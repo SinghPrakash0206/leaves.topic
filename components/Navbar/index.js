@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Input, Menu, Grid, Button, Header, Image, Modal, Form } from 'semantic-ui-react';
+import { Input, Menu, Grid, Button, Header, Image, Modal, Form, Icon, Popup } from 'semantic-ui-react';
 import fetch from 'isomorphic-unfetch'
 import axios from 'axios';
 
@@ -158,6 +158,7 @@ class TopicNavbar extends Component {
 					<a href="#" target="_blank">Logout</a>
 				</div>
 				</div>
+
 				<div className={'tag-lists ' + tagListBoxClass}>
 					<div className="close-tag-box" onClick={this.closeTagBox}>X</div>
 						<Input size='mini' type="url" required icon='search' onChange={this.searchTag.bind(this)} placeholder='Search...' />

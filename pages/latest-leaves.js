@@ -22,7 +22,7 @@ Topic.getInitialProps = async function(context) {
 		page_no = context.query.page_no
 	}
 	const queryTag = 'Latest Leaves'
-	const seoTitle = 'Lates Leaves | Ananr.us - Anant Leaves'
+	const seoTitle = 'Latest Leaves | Ananr.us - Anant Leaves'
 	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&order=desc&page=1&sort=created&perPage=20&page='+page_no)
 
 	const data = await res.json();

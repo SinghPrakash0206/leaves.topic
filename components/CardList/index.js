@@ -1,6 +1,6 @@
 import React from 'react'
 import fetch from 'isomorphic-unfetch'
-import { Grid, Image, Card, Icon, Popup, Pagination } from 'semantic-ui-react'
+import { Grid, Image, Card, Icon, Popup, Pagination, Dropdown } from 'semantic-ui-react'
 import Router from 'next/router'
 import Link from 'next/link'
 
@@ -15,7 +15,10 @@ class CardList extends React.Component {
 			activePage: this.props.data.activePage,
 			linksCunt: this.props.data.linksCunt,
 			paginationURL: this.props.data.paginationURL,
-			pageCount: 1
+			pageCount: 1,
+			sharingLinks: [],
+			linksIdsString: "",
+			modalBoxOpen: false
 		}
 
 	}
@@ -24,16 +27,62 @@ class CardList extends React.Component {
 		this.setState({ pageCount: (Math.ceil(this.props.data.linksCunt/20)) })
 	}
 
+	openModalBox = () => {
+		this.setState({ modalBoxOpen: true })
+	}
+
+	closeModalBox = () => {
+		this.setState({ modalBoxOpen: false })
+	}
+
+	clickOutModalBox = (e) => {
+		if(e.target.id === 'outer') {
+			this.setState({ modalBoxOpen: false })			
+		}
+	}
+
 	handlePaginationChange = (e, { activePage }) => {
 		this.setState({ activePage })
 		console.log(this.state.queryTag)
 		Router.push(`/${this.state.paginationURL}/page/${activePage}`)
 	}
 
+	addToBundle(topicData, e){
+		var linksArray = this.state.sharingLinks
+		var linksIdsString = this.state.linksIdsString
+		linksArray.push(topicData)
+		if(linksIdsString === "") {
+			linksIdsString = linksIdsString + String(topicData.id)
+		}else{
+			linksIdsString = linksIdsString +','+ String(topicData.id)
+		}
+		this.setState({sharingLinks:linksArray,linksIdsString:linksIdsString})
+	}
+
 	render(props){
-		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL } = this.state
+		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString } = this.state
 		return(
 			<div>
+				{
+					sharingLinks.length > 0 ?
+					<div className="share-icon" onClick={this.openModalBox}>		
+						<div className="sharing-link-count">{sharingLinks.length}</div>
+						<Icon className="icon-class" link name='share alternate' size="large"/>
+					</div>
+					: ''			
+				}
+
+				{modalBoxOpen ? 
+					<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
+						<div className="add-leaf-modal">
+							{sharingLinks.map((link, index) => (
+								<div className="link-list">{link.title}</div>
+							))}
+							<input className="copy-bundle-link" type="text" value={`http://localhost:3000/bundle/${linksIdsString}`} />
+						</div>
+					</div>
+				: ''}
+
 				<Grid container>
 				<h2 className="topic-label">{activeTag} topics</h2>
 					<Grid.Row>
@@ -43,8 +92,8 @@ class CardList extends React.Component {
 									<div className="topic-image">
 										<div className="topic-transparent-layer">
 											<div className="show-this-layer">
-												<span><Popup trigger={<Icon className="icon-class" link name='pin' size="large"/>} content="Pin it" /></span>
-												<span><a href={topic.url} target="_blank"><Popup trigger={<Icon className="icon-class" link name='external alternate' size="large" />} content="Open in new tab" /></a></span>
+												<span><Popup trigger={<Icon onClick={this.addToBundle.bind(this, topic)} value={topic.url} className="icon-class" link name='pin' size="large"/>} content="Pin It" /></span>
+												<span><a href={topic.url} target="_blank"><Popup trigger={<Icon className="icon-class" link name='add' size="large" />} content="Add to bundle & share" /></a></span>
 											</div>
 										</div>
 										<Image src={topic.preview_picture} />
@@ -61,6 +110,35 @@ class CardList extends React.Component {
 					})()}
 				</Grid>	
 				<style jsx>{`
+
+					.share-icon {
+						position: fixed;
+						right: 10px;
+						top: 100px;
+					}
+
+					.sharing-link-count {
+						background-color: #eee;
+						border-radius: 4px;
+						position: relative;
+						right: 18px;
+						padding: 5px;
+						z-index: 0;
+						cursor: pointer;
+					}
+
+					.link-list {
+						padding: 5px;
+						background-color: #eee;
+						margin: 3px;
+					}
+
+					.copy-bundle-link {
+						width: 100%;
+						margin-top: 20px;
+						padding: 6px;
+					}
+
 					.topic-label {
 						font-size: 40px;
 						font-weight: 700;
@@ -131,6 +209,27 @@ class CardList extends React.Component {
 					.pagination {
 						margin: 0px auto;
 						padding: 80px;
+					}
+
+					.add-leaf-modal {
+						border: 1px solid #eee;
+						border-radius: 10px;
+						max-width: 500px;
+						margin: 0px auto;
+						background-color: #fff;
+						padding: 20px;
+					}
+
+					.add-leaf-outer {
+						position: fixed; 
+						z-index: 99;
+						padding-top: 100px; 
+						left: 0;
+						top: 0;
+						width: 100%; 
+						height: 100%;
+						overflow: auto;
+						background-color: rgba(0,0,0,0.4);
 					}
 				`}</style>
 			</div>
