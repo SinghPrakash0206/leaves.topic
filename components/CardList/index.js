@@ -1,6 +1,6 @@
 import React from 'react'
 import fetch from 'isomorphic-unfetch'
-import { Grid, Image, Card, Icon, Popup, Pagination, Dropdown } from 'semantic-ui-react'
+import { Grid, Image, Card, Icon, Popup, Pagination, Dropdown, Input } from 'semantic-ui-react'
 import Router from 'next/router'
 import Link from 'next/link'
 
@@ -59,6 +59,30 @@ class CardList extends React.Component {
 		this.setState({sharingLinks:linksArray,linksIdsString:linksIdsString})
 	}
 
+	copyBundleLink() {
+		var copyText = document.getElementById("bundleLink");
+        copyText.select();
+        document.execCommand("Copy");
+		document.getElementById("copyMsg").innerHTML = "Copied!"
+	}
+
+	removeLink(id, e){
+		var sharingLinks = this.state.sharingLinks
+		var linksIdsString = this.state.linksIdsString
+		var stringIdArray = linksIdsString.split(',')
+		var stringIdIndex = stringIdArray.indexOf(String(id))
+		var linkObjectIndex = sharingLinks.findIndex(i => i.id === id);
+		stringIdArray.splice(stringIdIndex, 1)
+		sharingLinks.splice(linkObjectIndex, 1)
+		this.setState({linksIdsString:stringIdArray.join(','), sharingLinks:sharingLinks})
+		console.log(stringIdIndex)
+		console.log(linkObjectIndex)
+		if(stringIdArray.length === 0) {
+			this.closeModalBox()
+		}
+		// console.log(links.indexOf(String(id)))
+	}
+
 	render(props){
 		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString } = this.state
 		return(
@@ -76,9 +100,11 @@ class CardList extends React.Component {
 					<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
 						<div className="add-leaf-modal">
 							{sharingLinks.map((link, index) => (
-								<div className="link-list">{link.title}</div>
+								<div className="link-list" key={link.id} value={link.id}>{link.title}<span onClick={this.removeLink.bind(this, link.id)} className="remove-link">x</span></div>
 							))}
-							<input className="copy-bundle-link" type="text" value={`http://localhost:3000/bundle/${linksIdsString}`} />
+							<br/>
+							<Input id="bundleLink" fluid icon={<Icon name='copy' onClick={this.copyBundleLink} inverted circular link />} value={`http://localhost:3000/bundle/${linksIdsString}`} />
+							<div id="copyMsg"></div>
 						</div>
 					</div>
 				: ''}
@@ -133,10 +159,22 @@ class CardList extends React.Component {
 						margin: 3px;
 					}
 
+					.remove-link {
+						float: right;
+						background-color: #8d8d8e;
+						color: #fff;
+						padding: 1px 7px;
+						border-radius: 50%;
+						font-weight: 700;
+						font-size: 14px;
+						cursor: pointer;
+					}
+
 					.copy-bundle-link {
 						width: 100%;
 						margin-top: 20px;
 						padding: 6px;
+						border: 2px solid #333;
 					}
 
 					.topic-label {
