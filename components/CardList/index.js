@@ -50,13 +50,19 @@ class CardList extends React.Component {
 	addToBundle(topicData, e){
 		var linksArray = this.state.sharingLinks
 		var linksIdsString = this.state.linksIdsString
-		linksArray.push(topicData)
-		if(linksIdsString === "") {
-			linksIdsString = linksIdsString + String(topicData.id)
+		var stringIdArray = linksIdsString.split(',')
+		var stringIdIndex = stringIdArray.indexOf(String(topicData.id))
+		if(stringIdIndex < 0){
+			linksArray.push(topicData)
+			if(linksIdsString === "") {
+				linksIdsString = linksIdsString + String(topicData.id)
+			}else{
+				linksIdsString = linksIdsString +','+ String(topicData.id)
+			}
+			this.setState({sharingLinks:linksArray,linksIdsString:linksIdsString})			
 		}else{
-			linksIdsString = linksIdsString +','+ String(topicData.id)
+			alert('Already in the bundle')
 		}
-		this.setState({sharingLinks:linksArray,linksIdsString:linksIdsString})
 	}
 
 	copyBundleLink() {
@@ -99,12 +105,14 @@ class CardList extends React.Component {
 				{modalBoxOpen ? 
 					<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
 						<div className="add-leaf-modal">
+							<div className="share-modal-title">Share This Bundle</div>
 							{sharingLinks.map((link, index) => (
 								<div className="link-list" key={link.id} value={link.id}>{link.title}<span onClick={this.removeLink.bind(this, link.id)} className="remove-link">x</span></div>
 							))}
 							<br/>
 							<Input id="bundleLink" fluid icon={<Icon name='copy' onClick={this.copyBundleLink} inverted circular link />} value={`http://localhost:3000/bundle/${linksIdsString}`} />
 							<div id="copyMsg"></div>
+							<div className="close-share-modal" onClick={this.closeModalBox}>close</div>
 						</div>
 					</div>
 				: ''}
@@ -118,13 +126,13 @@ class CardList extends React.Component {
 									<div className="topic-image">
 										<div className="topic-transparent-layer">
 											<div className="show-this-layer">
-												<span><Popup trigger={<Icon onClick={this.addToBundle.bind(this, topic)} value={topic.url} className="icon-class" link name='pin' size="large"/>} content="Pin It" /></span>
-												<span><a href={topic.url} target="_blank"><Popup trigger={<Icon className="icon-class" link name='add' size="large" />} content="Add to bundle & share" /></a></span>
+												<span><Popup trigger={<Icon onClick={this.addToBundle.bind(this, topic)} value={topic.url} className="icon-class" link name='pin' size="large"/>} content="Add to bundle & share" /></span>
+												<span><a href={topic.url} target="_blank"><Popup trigger={<Icon className="icon-class" link name='external alternate' size="large" />} content="Orizonal Resource" /></a></span>
 											</div>
 										</div>
 										<Image src={topic.preview_picture} />
 									</div>
-									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`}><a target="_blank"><div className="topic-content">{topic.title}</div></a></Link>
+									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`} target="_blank"><a><div className="topic-content">{topic.title}</div></a></Link>
 								</div>
 							</Grid.Column>
 						))}
@@ -150,6 +158,23 @@ class CardList extends React.Component {
 						right: 18px;
 						padding: 5px;
 						z-index: 0;
+						cursor: pointer;
+					}
+
+					.share-modal-title {
+						font-size: 20px;
+						font-weight: 700;
+						margin-bottom: 20px;
+						font-family: 'Roboto Mono', monospace;
+					}
+
+					.close-share-modal {
+						font-size: 16px;
+						background-color: #eee;
+						padding: 3px 10px;
+						display: inline-block;
+						border-radius: 3px;
+						margin-top: 20px;
 						cursor: pointer;
 					}
 
