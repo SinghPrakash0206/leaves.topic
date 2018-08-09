@@ -72,6 +72,15 @@ class CardList extends React.Component {
 		document.getElementById("copyMsg").innerHTML = "Copied!"
 	}
 
+	cleanModalBox(e) {
+		var sharingLinks = this.state.sharingLinks
+		var linksIdsString = this.state.linksIdsString
+		linksIdsString = ""
+		sharingLinks = []
+		this.setState({sharingLinks:sharingLinks, linksIdsString:linksIdsString})
+		this.closeModalBox()
+	}
+
 	removeLink(id, e){
 		var sharingLinks = this.state.sharingLinks
 		var linksIdsString = this.state.linksIdsString
@@ -106,13 +115,16 @@ class CardList extends React.Component {
 					<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
 						<div className="add-leaf-modal">
 							<div className="share-modal-title">Share This Bundle</div>
-							{sharingLinks.map((link, index) => (
-								<div className="link-list" key={link.id} value={link.id}>{link.title}<span onClick={this.removeLink.bind(this, link.id)} className="remove-link">x</span></div>
-							))}
+							<div className="share-link-list">
+								{sharingLinks.map((link, index) => (
+									<div className="link-list" key={link.id} value={link.id}>{link.title}<span onClick={this.removeLink.bind(this, link.id)} className="remove-link">x</span></div>
+								))}
+							</div>
 							<br/>
 							<Input id="bundleLink" fluid icon={<Icon name='copy' onClick={this.copyBundleLink} inverted circular link />} value={`http://localhost:3000/bundle/${linksIdsString}`} />
 							<div id="copyMsg"></div>
-							<div className="close-share-modal" onClick={this.closeModalBox}>close</div>
+							<div className="share-modal-btn" onClick={this.closeModalBox}><Icon className="icon-class" link name='window close' size="small" /> close</div>
+							<div className="share-modal-btn" onClick={this.cleanModalBox.bind(this)}><Icon className="icon-class" link name='erase' size="small" /> clear</div>
 						</div>
 					</div>
 				: ''}
@@ -132,7 +144,7 @@ class CardList extends React.Component {
 										</div>
 										<Image src={topic.preview_picture} />
 									</div>
-									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`} target="_blank"><a><div className="topic-content">{topic.title}</div></a></Link>
+									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`}><a target="_blank" rel="noopener noreferrer"><div className="topic-content">{topic.title}</div></a></Link>
 								</div>
 							</Grid.Column>
 						))}
@@ -161,6 +173,11 @@ class CardList extends React.Component {
 						cursor: pointer;
 					}
 
+					.share-link-list {
+						max-height: 400px;
+						overflow-y: scroll;
+					}
+
 					.share-modal-title {
 						font-size: 20px;
 						font-weight: 700;
@@ -168,7 +185,7 @@ class CardList extends React.Component {
 						font-family: 'Roboto Mono', monospace;
 					}
 
-					.close-share-modal {
+					.share-modal-btn {
 						font-size: 16px;
 						background-color: #eee;
 						padding: 3px 10px;
@@ -176,6 +193,7 @@ class CardList extends React.Component {
 						border-radius: 3px;
 						margin-top: 20px;
 						cursor: pointer;
+						margin-right: 10px;
 					}
 
 					.link-list {
