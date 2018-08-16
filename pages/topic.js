@@ -23,7 +23,7 @@ Topic.getInitialProps = async function(context) {
 	}
 	const queryTag = context.query.tag.split('-').join('.')
 	const seoTitle = context.query.tag.split('-').join(' ').replace(/\b\w/g, l => l.toUpperCase())
-	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&perPage=20&order=asc&page='+page_no+'&sort=created&tags=' + queryTag)
+	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&perPage=20&order=desc&page='+page_no+'&sort=created&tags=' + queryTag)
 
 	const data = await res.json();
 	return {

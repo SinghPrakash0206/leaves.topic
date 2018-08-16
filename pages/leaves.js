@@ -20,7 +20,7 @@ const Leaves = withRouter((props) => (
 							<div className="leaves-content">
 								{Parser(props.leaves.content,{
 										replace: function(domNode) {
-											if (domNode.attribs && domNode.attribs.src) {
+											if (domNode.attribs && domNode.name === 'img') {
 												return <img src={domNode.attribs.src} style={{maxWidth:'100%',display:'block'}}/>
 											}
 											if (domNode.attribs && domNode.name === 'pre') {

@@ -23,8 +23,18 @@ class CardList extends React.Component {
 
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		this.setState({ pageCount: (Math.ceil(this.props.data.linksCunt/20)) })
+		var ids = localStorage.getItem('linksIds')
+		var links = localStorage.getItem('sharingLinks')
+		console.log(ids)
+		if(ids) {
+			this.setState({linksIdsString: JSON.parse(ids).linksIds})
+		}
+
+		if(links) {
+			this.setState({sharingLinks: JSON.parse(links).sharingLinks})
+		}
 	}
 
 	openModalBox = () => {
@@ -43,7 +53,6 @@ class CardList extends React.Component {
 
 	handlePaginationChange = (e, { activePage }) => {
 		this.setState({ activePage })
-		console.log(this.state.queryTag)
 		Router.push(`/${this.state.paginationURL}/page/${activePage}`)
 	}
 
@@ -59,7 +68,9 @@ class CardList extends React.Component {
 			}else{
 				linksIdsString = linksIdsString +','+ String(topicData.id)
 			}
-			this.setState({sharingLinks:linksArray,linksIdsString:linksIdsString})			
+			this.setState({sharingLinks:linksArray,linksIdsString:linksIdsString})	
+			localStorage.setItem('linksIds', JSON.stringify({"linksIds":linksIdsString}));
+			localStorage.setItem('sharingLinks', JSON.stringify({"sharingLinks":linksArray}));	
 		}else{
 			alert('Already in the bundle')
 		}
@@ -78,6 +89,8 @@ class CardList extends React.Component {
 		linksIdsString = ""
 		sharingLinks = []
 		this.setState({sharingLinks:sharingLinks, linksIdsString:linksIdsString})
+		localStorage.setItem('linksIds', JSON.stringify({"linksIds":linksIdsString}));
+		localStorage.setItem('sharingLinks', JSON.stringify({"sharingLinks":sharingLinks}));	
 		this.closeModalBox()
 	}
 
@@ -90,12 +103,11 @@ class CardList extends React.Component {
 		stringIdArray.splice(stringIdIndex, 1)
 		sharingLinks.splice(linkObjectIndex, 1)
 		this.setState({linksIdsString:stringIdArray.join(','), sharingLinks:sharingLinks})
-		console.log(stringIdIndex)
-		console.log(linkObjectIndex)
+		localStorage.setItem('linksIds', JSON.stringify({"linksIds":stringIdArray.join(',')}));
+		localStorage.setItem('sharingLinks', JSON.stringify({"sharingLinks":sharingLinks}));	
 		if(stringIdArray.length === 0) {
 			this.closeModalBox()
 		}
-		// console.log(links.indexOf(String(id)))
 	}
 
 	render(props){
@@ -144,7 +156,7 @@ class CardList extends React.Component {
 										</div>
 										<Image src={topic.preview_picture} />
 									</div>
-									<Link href={`/leaves/?id=${topic.id}`} as={`/leaves/${topic.id}`}><a target="_blank" rel="noopener noreferrer"><div className="topic-content">{topic.title}</div></a></Link>
+									<a href={`/leaves/${topic.id}`} target="_blank" rel="noopener noreferrer"><div className="topic-content">{topic.title}</div></a>
 								</div>
 							</Grid.Column>
 						))}
