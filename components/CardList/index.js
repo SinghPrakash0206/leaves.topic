@@ -23,7 +23,17 @@ class CardList extends React.Component {
 
 	}
 
+	formatLinks(links) {
+		for (var i = 0; i < links.length; i++) {
+			if(links[i].domain_name === "www.youtube.com"){
+				links[i].url = links[i].url.split("&url=")[1]
+			}
+		}
+		this.setState({topicList: links})
+	}
+
 	componentDidMount() {
+		this.formatLinks(this.state.topicList)
 		this.setState({ pageCount: (Math.ceil(this.props.data.linksCunt/20)) })
 		var ids = localStorage.getItem('linksIds')
 		var links = localStorage.getItem('sharingLinks')
