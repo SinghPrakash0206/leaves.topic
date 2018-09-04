@@ -1,4 +1,5 @@
 import Header from './Header'
+import Footer from './Footer'
 import Head from 'next/head'
 
 const Layout = (props) => (
@@ -20,10 +21,14 @@ const Layout = (props) => (
 		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css"/>
 	    </Head>
 		<Header/>
-			{props.children}
+		<div className="content-inject">{props.children}</div>
+		<Footer />
 		<style jsx>{`
 			body {
 				background-color: #fafafa;
+			}
+			.content-inject {
+				min-height: 100vh;
 			}
 		`}</style>
 	</div>
