@@ -18,22 +18,14 @@ class CardList extends React.Component {
 			pageCount: 1,
 			sharingLinks: [],
 			linksIdsString: "",
-			modalBoxOpen: false
+			modalBoxOpen: false,
+			hostUrl: ''
 		}
 
-	}
-
-	formatLinks(links) {
-		for (var i = 0; i < links.length; i++) {
-			if(links[i].domain_name === "www.youtube.com"){
-				links[i].url = links[i].url.split("&url=")[1]
-			}
-		}
-		this.setState({topicList: links})
 	}
 
 	componentDidMount() {
-		this.formatLinks(this.state.topicList)
+		this.setState({hostUrl: window.location.host})
 		this.setState({ pageCount: (Math.ceil(this.props.data.linksCunt/20)) })
 		var ids = localStorage.getItem('linksIds')
 		var links = localStorage.getItem('sharingLinks')
@@ -121,7 +113,7 @@ class CardList extends React.Component {
 	}
 
 	render(props){
-		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString } = this.state
+		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString, hostUrl } = this.state
 		return(
 			<div>
 				{
@@ -143,7 +135,7 @@ class CardList extends React.Component {
 								))}
 							</div>
 							<br/>
-							<Input id="bundleLink" fluid icon={<Icon name='copy' onClick={this.copyBundleLink} inverted circular link />} value={`http://localhost:3000/bundle/${linksIdsString}`} />
+							<Input id="bundleLink" fluid icon={<Icon name='copy' onClick={this.copyBundleLink} inverted circular link />} value={`${hostUrl}/bundle/${linksIdsString}`} />
 							<div id="copyMsg"></div>
 							<div className="share-modal-btn" onClick={this.closeModalBox}><Icon className="icon-class" link name='window close' size="small" /> close</div>
 							<div className="share-modal-btn" onClick={this.cleanModalBox.bind(this)}><Icon className="icon-class" link name='erase' size="small" /> clear</div>

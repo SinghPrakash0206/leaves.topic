@@ -19,6 +19,11 @@ class TopicNavbar extends Component {
 	show = dimmer => () => this.setState({ dimmer, open: true })
 
 	openModalBox = () => {
+		console.log(this.state.isTagBoxOpen)
+		if(this.state.isTagBoxOpen){
+			this.state.isTagBoxOpen = false;
+			this.setState({ modalBoxOpen: true })
+		}
 		this.setState({ modalBoxOpen: true })
 	}
 

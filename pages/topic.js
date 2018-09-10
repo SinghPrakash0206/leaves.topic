@@ -26,8 +26,17 @@ Topic.getInitialProps = async function(context) {
 	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&perPage=20&order=desc&page='+page_no+'&sort=created&tags=' + queryTag)
 
 	const data = await res.json();
+
+	var links = data._embedded.items
+
+	for (var i = 0; i < links.length; i++) {
+		if(links[i].domain_name === "www.youtube.com"){
+			links[i].url = links[i].url.split("&url=")[1]
+		}
+	}
+
 	return {
-		list: data._embedded.items,
+		list: links,
 		tag: context.query.tag,
 		seoTitle: seoTitle,
 		seoDesc: 'Resources list of the '+seoTitle,
