@@ -3,7 +3,7 @@ import fetch from 'isomorphic-unfetch'
 import { Grid, Image, Card, Icon, Popup, Pagination, Dropdown, Input } from 'semantic-ui-react'
 import Router from 'next/router'
 import Link from 'next/link'
-import TopicPagination from './TopicPagination'
+import TopicPagination from '../Pagination'
 
 class CardList extends React.Component {
 
@@ -164,11 +164,7 @@ class CardList extends React.Component {
 							</Grid.Column>
 						))}
 					</Grid.Row>
-					{(() => {
-						if(pageCount > 1) {
-							return <div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag}/></div>
-						}
-					})()}
+					<div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag}/></div>
 				</Grid>	
 				<style jsx>{`
 

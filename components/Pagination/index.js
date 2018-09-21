@@ -47,11 +47,14 @@ const makePaginationHref = (pages, tag, active) => {
     // Outer loop to create parent
     for (let i = startIndex; i <= endPage; i++) {
     	if(tag === "Latest Leaves") {
-	      table.push(<a href={"/latest-leaves/page/" + i} key={i} style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a>)
+	      table.push(<Link href={"/latest-leaves/page/" + i} key={i}><a style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a></Link>)
     	}else{
-	      table.push(<a href={"/topic/" + tag + "/page/" + i} key={i} style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a>)
+	      table.push(<Link href={"/topic/" + tag + "/page/" + i} key={i}><a style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a></Link>)
     	}
     }
+
+    console.log(table.length)
+
     return table
   }
 
