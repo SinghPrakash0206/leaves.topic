@@ -16,7 +16,7 @@ class CardList extends React.Component {
 			activePage: this.props.data.activePage,
 			linksCunt: this.props.data.linksCunt,
 			paginationURL: this.props.data.paginationURL,
-			pageCount: 1,
+			pageCount: Math.ceil(this.props.data.linksCunt/20),
 			sharingLinks: [],
 			linksIdsString: "",
 			modalBoxOpen: false,
@@ -27,10 +27,8 @@ class CardList extends React.Component {
 
 	componentDidMount() {
 		this.setState({hostUrl: window.location.host})
-		this.setState({ pageCount: (Math.ceil(this.props.data.linksCunt/20)) })
 		var ids = localStorage.getItem('linksIds')
 		var links = localStorage.getItem('sharingLinks')
-		console.log(ids)
 		if(ids) {
 			this.setState({linksIdsString: JSON.parse(ids).linksIds})
 		}

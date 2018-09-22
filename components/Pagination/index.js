@@ -53,8 +53,6 @@ const makePaginationHref = (pages, tag, active) => {
     	}
     }
 
-    console.log(table.length)
-
     return table
   }
 
