@@ -152,7 +152,7 @@ class CardList extends React.Component {
 										<div className="topic-transparent-layer">
 											<div className="show-this-layer">
 												<span><Popup trigger={<Icon onClick={this.addToBundle.bind(this, topic)} value={topic.url} className="icon-class" link name='pin' size="large"/>} content="Add to bundle & share" /></span>
-												<span><a href={topic.url} target="_blank"><Popup trigger={<Icon className="icon-class" link name='external alternate' size="large" />} content="Orizonal Resource" /></a></span>
+												<span><a href={topic.url} target="_blank"><Popup trigger={<Icon className="icon-class" link name='external alternate' size="large" />} content="Original Resource" /></a></span>
 											</div>
 										</div>
 										<Image src={topic.preview_picture} />
