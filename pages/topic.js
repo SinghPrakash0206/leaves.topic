@@ -3,19 +3,20 @@ import { withRouter } from 'next/router'
 import CardList from '../components/CardList/'
 import TopicNavbar from '../components/Navbar/'
 import Link from 'next/link'
+import React, { Component } from 'react'
 
 
-const Topic = withRouter((props) => (
-	<div>
-		<TopicNavbar/>
-		<Layout title={`${props.seoTitle}`} description={props.seoDesc}>
-			<CardList data={props}/>
-		</Layout>
-	</div>
-))
+class Topic extends Component {
 
-Topic.getInitialProps = async function(context) {
-	var page_no;
+	constructor(props){
+		super(props)
+		this.state = {
+
+		}
+	}
+
+  static async getInitialProps(context) {
+    var page_no;
 	if(context.query.page_no === undefined) {
 		page_no = 1
 	}else{
@@ -43,8 +44,22 @@ Topic.getInitialProps = async function(context) {
 		linksCunt: data.total,
 		activePage: data.page,
 		queryTag: queryTag,
-		paginationURL: 'topic/'+context.query.tag
+		paginationURL: 'topic/'+context.query.tag,
+		type: 'topic'
 	}
+  }
+
+
+  render(props) {
+    return (
+     <div>
+		<TopicNavbar />
+		<Layout title={this.props.seoTitle} description={this.props.seoDesc}>
+			<CardList data={this.props} />
+		</Layout>
+	</div>
+    )
+  }
 }
 
 export default Topic

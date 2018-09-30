@@ -2,9 +2,9 @@ import Link from 'next/link'
 
 
 
-const makePaginationHref = (pages, tag, active) => {
+const makePaginationHref = (pages, tag, active, type) => {
     let table = []
-
+    console.log(pages)
     const paginationStyle = {
 		padding: '8px 12px',
 		border: '1px solid rgba(34,36,38,.15)',  
@@ -46,9 +46,12 @@ const makePaginationHref = (pages, tag, active) => {
 
     // Outer loop to create parent
     for (let i = startIndex; i <= endPage; i++) {
-    	if(tag === "Latest Leaves") {
+    	if(type === "latest-leaves") {
 	      table.push(<Link href={"/latest-leaves/page/" + i} key={i}><a style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a></Link>)
-    	}else{
+    	}else if(type === "searching"){
+	      table.push(<Link href={"/search/"+tag+"/page/" + i} key={i}><a style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a></Link>)
+    	}
+    	else{
 	      table.push(<Link href={"/topic/" + tag + "/page/" + i} key={i}><a style={ active === i ? paginationActiveStyle : paginationStyle}>{i}</a></Link>)
     	}
     }
@@ -59,7 +62,7 @@ const makePaginationHref = (pages, tag, active) => {
 
 const TopicPagination = (props) => (
 	<div className="page-link">
-		{makePaginationHref(props.totalPages, props.tag, props.defaultActivePage)}
+		{makePaginationHref(props.totalPages, props.tag, props.defaultActivePage, props.type)}
 		<style jsx>{`
 			.page-link a{
 				padding: .92857143em 1.14285714em;

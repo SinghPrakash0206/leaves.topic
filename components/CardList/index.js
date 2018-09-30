@@ -1,20 +1,24 @@
 import React from 'react'
 import fetch from 'isomorphic-unfetch'
-import { Grid, Image, Card, Icon, Popup, Pagination, Dropdown, Input } from 'semantic-ui-react'
+import { Grid, Image, Card, Icon, Popup, Pagination, Dropdown, Input, Form } from 'semantic-ui-react'
 import Router from 'next/router'
 import Link from 'next/link'
 import TopicPagination from '../Pagination'
+import axios from 'axios'
+
 
 class CardList extends React.Component {
 
 	constructor(props){
 		super(props)
+		console.log(this.props.data.linksCunt)
 		this.state = {
 			topicList: this.props.data.list,
 			activeTag: this.props.data.tag,
 			queryTag: this.props.data.queryTag,
 			activePage: this.props.data.activePage,
 			linksCunt: this.props.data.linksCunt,
+			type: this.props.data.type,
 			paginationURL: this.props.data.paginationURL,
 			pageCount: Math.ceil(this.props.data.linksCunt/20),
 			sharingLinks: [],
@@ -112,7 +116,7 @@ class CardList extends React.Component {
 	}
 
 	render(props){
-		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString, hostUrl } = this.state
+		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString, hostUrl, type } = this.state
 		return(
 			<div>
 				{
@@ -130,7 +134,7 @@ class CardList extends React.Component {
 							<div className="share-modal-title">Share This Bundle</div>
 							<div className="share-link-list">
 								{sharingLinks.map((link, index) => (
-									<div className="link-list" key={link.id} value={link.id}>{link.title}<span onClick={this.removeLink.bind(this, link.id)} className="remove-link">x</span></div>
+									<div className="link-list" key={link.id} value={link.id}><div>{link.title}</div><span onClick={this.removeLink.bind(this, link.id)} className="remove-link">x</span></div>
 								))}
 							</div>
 							<br/>
@@ -162,7 +166,7 @@ class CardList extends React.Component {
 							</Grid.Column>
 						))}
 					</Grid.Row>
-					<div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag}/></div>
+					<div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag} type={type}/></div>
 				</Grid>	
 				<style jsx>{`
 
@@ -236,7 +240,7 @@ class CardList extends React.Component {
 						color: #2d2c2c;
 						opacity: 0.8;
 						width: 100%;
-						padding: 40px 0px 10px 10px;
+						padding: 30px 0px 10px 10px;
 						letter-spacing: -2px;
 						word-spacing: -12px;
 					}
@@ -299,6 +303,10 @@ class CardList extends React.Component {
 					.pagination {
 						margin: 0px auto;
 						padding: 80px;
+					}
+
+					.search-box {
+						padding-top: 20px;
 					}
 
 					.add-leaf-modal {

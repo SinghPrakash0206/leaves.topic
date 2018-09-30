@@ -35,7 +35,8 @@ Topic.getInitialProps = async function(context) {
 		activePage: data.page,
 		queryTag: queryTag,
 		queryURL: 'topic'+queryTag,
-		paginationURL: 'latest-leaves'
+		paginationURL: 'latest-leaves',
+		type: 'latest-leaves'
 	}
 }
 

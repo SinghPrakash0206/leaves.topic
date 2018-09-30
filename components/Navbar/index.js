@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { Input, Menu, Grid, Button, Header, Image, Modal, Form, Icon, Popup } from 'semantic-ui-react';
 import fetch from 'isomorphic-unfetch'
 import axios from 'axios';
+import Router from 'next/router'
 
 
 class TopicNavbar extends Component {
@@ -13,7 +14,8 @@ class TopicNavbar extends Component {
 		frezzArray: [],
 		tagArray: [],
 		modalBoxOpen: false,
-		urlToAdd: ''
+		urlToAdd: '',
+		searchQuery: null
 	}
 
 	show = dimmer => () => this.setState({ dimmer, open: true })
@@ -120,16 +122,26 @@ class TopicNavbar extends Component {
 		}
 	}
 
+	makeSearch(e){
+		this.setState({searchQuery: e.target.value})
+	}
+
+	searchThisQuery(e){
+		e.preventDefault()
+		Router.push(`/search/${this.state.searchQuery}`)
+	}
+
 	render() {
 		const { activeItem, modalBoxOpen } = this.state
 		let tagListBoxClass = this.state.isTagBoxOpen ? 'open-tag-box' : 'close-tag-box'
 		console.log(tagListBoxClass)
 		return (
 			<div className="topic-navbar">
+
 			{modalBoxOpen ? 
 				<div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer">
 					<div className="add-leaf-modal">
-						<Form>
+						<Form >
 							<Form.Field>
 							<label>URL</label>
 								<input type="url" onChange={this.setURLToState.bind(this)} placeholder='Paste the URL' />
@@ -158,7 +170,19 @@ class TopicNavbar extends Component {
 				</div>
 				<input type="checkbox" id="nav-check"/>
 				<div className="nav-links">
-					<a className="add-leaf-btn" onClick={this.openModalBox}>Add</a>
+					<a className="search-menu">
+
+						<Form onSubmit={this.searchThisQuery.bind(this)}>
+							<Form.Field>
+								<Input onChange={this.makeSearch.bind(this)} icon placeholder='Search...'>
+									<input />
+									<Icon name='search' />
+								</Input>
+							</Form.Field>
+							<input type='submit' hidden />
+						</Form>
+					</a>
+					<a className="navbar-links" onClick={this.openModalBox}>Add</a>
 					<a href="#" target="_blank">Login</a>
 					<a href="#" target="_blank">Logout</a>
 				</div>
@@ -297,7 +321,7 @@ class TopicNavbar extends Component {
 						width: 100%;
 					}
 
-					.add-leaf-btn {
+					.navbar-links {
 						cursor: pointer;
 					}
 
