@@ -150,7 +150,7 @@ class CardList extends React.Component {
 				<h2 className="topic-label">{activeTag} topics</h2>
 					<Grid.Row>
 						{topicList.map((topic, index) =>(
-							<Grid.Column mobile={16} tablet={8} computer={4} key={topic.id} >
+							<Grid.Column mobile={16} tablet={8} computer={16} key={topic.id} >
 								<div className="topic-card">
 									<div className="topic-image">
 										<div className="topic-transparent-layer">
@@ -234,13 +234,13 @@ class CardList extends React.Component {
 					}
 
 					.topic-label {
-						font-size: 40px;
+						font-size: 30px;
 						font-weight: 700;
 						font-family: 'Roboto Mono', monospace;
 						color: #2d2c2c;
 						opacity: 0.8;
 						width: 100%;
-						padding: 30px 0px 10px 10px;
+						padding: 20px 0px 10px 10px;
 						letter-spacing: -2px;
 						word-spacing: -12px;
 					}
