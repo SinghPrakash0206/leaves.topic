@@ -24,7 +24,11 @@ class CardList extends React.Component {
 			sharingLinks: [],
 			linksIdsString: "",
 			modalBoxOpen: false,
-			hostUrl: ''
+			hostUrl: '',
+			gridRowClass: '',
+			isReaderActive: false,
+			activeTabs: [],
+			fixedReader: false
 		}
 
 	}
@@ -40,6 +44,22 @@ class CardList extends React.Component {
 		if(links) {
 			this.setState({sharingLinks: JSON.parse(links).sharingLinks})
 		}
+
+		window.addEventListener('scroll', this.handleScroll);
+	}
+
+	componentWillUnmount() {
+	    window.removeEventListener('scroll', this.handleScroll);
+	}
+
+	handleScroll = (event) => {
+	    let scrollTop = event.srcElement.body.scrollTop
+        console.log(window.scrollY)
+        if(this.state.isReaderActive && window.scrollY > 150){
+        	this.setState({fixedReader: true})
+        }else{
+        	this.setState({fixedReader: false})
+        }
 	}
 
 	openModalBox = () => {
@@ -115,6 +135,10 @@ class CardList extends React.Component {
 		}
 	}
 
+	addToReader = (topic) => {	
+		this.setState({isReaderActive: true})
+	}
+
 	render(props){
 		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString, hostUrl, type } = this.state
 		return(
@@ -146,11 +170,12 @@ class CardList extends React.Component {
 					</div>
 				: ''}
 
-				<Grid container>
+				<div className="card-section">
 				<h2 className="topic-label">{activeTag} topics</h2>
-					<Grid.Row>
+					<div className={this.state.isReaderActive ? 'card-container-reader' : 'card-container'}>
+						<div className="cards">
 						{topicList.map((topic, index) =>(
-							<Grid.Column mobile={16} tablet={8} computer={16} key={topic.id} >
+							<div className="card-list" key={topic.id}>
 								<div className="topic-card">
 									<div className="topic-image">
 										<div className="topic-transparent-layer">
@@ -161,14 +186,67 @@ class CardList extends React.Component {
 										</div>
 										<Image src={topic.preview_picture} />
 									</div>
-									<a href={`/leaves/${topic.id}`} target="_blank" rel="noopener noreferrer"><div className="topic-content">{topic.title}</div></a>
+									<div className="topic-content" onClick={this.addToReader.bind(null, topic)}>{topic.title}</div>
+									{/*<a href={`/leaves/${topic.id}`} target="_blank" rel="noopener noreferrer"><div className="topic-content">{topic.title}</div></a>*/}  
 								</div>
-							</Grid.Column>
+							</div>
 						))}
-					</Grid.Row>
+						</div>
+						<div className="reader">
+						<div className={this.state.fixedReader ? 'reader-inner-fixed' : 'reader-inner'}>
+							<div className="reader-tabs">
+								<div>tab 1</div>
+								<div>tab 2</div>
+								<div>tab 3</div>
+								<div>tab 4</div>
+								<div>tab 5</div>
+							</div>
+							<div className="reader-content">
+								<p>Reminder: Good Morning! A friendly reminder to everyone to use our Leaves app frequently. You can use it to search, read, save and share one or bundle of interesting online resources (articles,blogs,tutorials) which are in public domain. If you experience any trouble using it or have a great idea to improve it, never hesitate to share it with @Prakash. Thanks!</p>
+							</div>
+							</div>
+						</div>
+					</div>
 					<div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag} type={type}/></div>
-				</Grid>	
+				</div>	
 				<style jsx>{`
+					.card-section {
+						max-width: 80%;
+						margin: 0px auto;
+					}
+
+					.card-container .cards{
+						display: grid;
+						grid-gap: 20px;
+						grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+					}
+
+					.card-container-reader {
+						display: grid;
+						grid-template-columns: 25% 75%;
+					}
+
+					.reader {
+						border: 2px solid #eee;
+						margin: 0px 10px;
+						position: relative;
+					}
+
+					.reader-inner {
+					}
+
+					.reader-inner-fixed {
+						position: fixed;
+						width: 58%;
+						top: 10px;
+
+					}
+
+					.reader .reader-tabs {
+						display: grid;
+						grid-gap: 20px;
+						grid-template-columns: repeat(5, 1fr);
+					}
 
 					.share-icon {
 						position: fixed;
