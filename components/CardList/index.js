@@ -5,6 +5,8 @@ import Router from 'next/router'
 import Link from 'next/link'
 import TopicPagination from '../Pagination'
 import axios from 'axios'
+import Parser from 'html-react-parser';
+import Highlight from 'react-highlight'
 
 
 class CardList extends React.Component {
@@ -28,7 +30,11 @@ class CardList extends React.Component {
 			gridRowClass: '',
 			isReaderActive: false,
 			activeTabs: [],
-			fixedReader: false
+			fixedReader: false,
+			activeRead: null,
+			startTabIndex: 0,
+			endTabIndex: 0,
+			activeTabId: 1
 		}
 
 	}
@@ -54,7 +60,6 @@ class CardList extends React.Component {
 
 	handleScroll = (event) => {
 	    let scrollTop = event.srcElement.body.scrollTop
-        console.log(window.scrollY)
         if(this.state.isReaderActive && window.scrollY > 150){
         	this.setState({fixedReader: true})
         }else{
@@ -137,10 +142,42 @@ class CardList extends React.Component {
 
 	addToReader = (topic) => {	
 		this.setState({isReaderActive: true})
+		this.setState({activeTabId: topic.id})
+		topic['activeTab'] = true
+		this.setState({activeRead: topic})
+		const activeTabs = this.state.activeTabs
+		activeTabs.push(topic)
+		const tabLength = activeTabs.length
+		let startTabIndex = 0;
+		let endTabIndex = 0;
+		if(tabLength > 5){
+			startTabIndex = tabLength - 5
+			endTabIndex = tabLength	
+
+			for (var i = 0; i < activeTabs.length; i++) {
+				activeTabs[i]['activeTab'] = false
+			}
+
+			for (var i = startTabIndex; i < endTabIndex; i++) {
+				activeTabs[i]['activeTab'] = true
+			}
+		}else{
+			startTabIndex = 1
+			endTabIndex = tabLength			
+		}
+		this.setState({startTabIndex:startTabIndex, endTabIndex:endTabIndex})
+
+		this.setState({activeTabs})
+	}
+
+	changeTab = (topic) => {
+		this.setState({activeTabId: topic.id})
+		this.setState({activeRead: topic})		
 	}
 
 	render(props){
-		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString, hostUrl, type } = this.state
+		const { topicList, activeTag, activePage, linksCunt, pageCount, queryTag, paginationURL, sharingLinks, modalBoxOpen, linksIdsString, hostUrl, type, activeRead, activeTabId } = this.state
+		const { activeTabs } = this.state
 		return(
 			<div>
 				{
@@ -192,17 +229,44 @@ class CardList extends React.Component {
 							</div>
 						))}
 						</div>
-						<div className="reader">
+						<div className={this.state.isReaderActive ? 'reader reader-block' : 'reader'}>
 						<div className={this.state.fixedReader ? 'reader-inner-fixed' : 'reader-inner'}>
 							<div className="reader-tabs">
-								<div>tab 1</div>
-								<div>tab 2</div>
-								<div>tab 3</div>
-								<div>tab 4</div>
-								<div>tab 5</div>
+								<div className="tab-name">
+									<div className="tab-title">&lt;</div>
+									<div className="close-tab"></div>
+								</div>
+							{activeTabs.map((tab, index) => {
+								if(tab.activeTab){
+									return (
+									<div onClick={this.changeTab.bind(null, tab)} className={ tab.id === activeTabId ? 'tab-name active-tab' : 'tab-name'} key={tab.id}>
+										<div className="tab-title">{tab.title}</div>
+										<div className="close-tab">x</div>
+									</div>
+									)
+								}
+							})}
+							{activeTabs.length > 5 ? 
+								(<div className="tab-name">
+									<div className="tab-title">&gt;</div>
+									<div className="close-tab"></div>
+								</div>): ''
+							}
+								
 							</div>
 							<div className="reader-content">
-								<p>Reminder: Good Morning! A friendly reminder to everyone to use our Leaves app frequently. You can use it to search, read, save and share one or bundle of interesting online resources (articles,blogs,tutorials) which are in public domain. If you experience any trouble using it or have a great idea to improve it, never hesitate to share it with @Prakash. Thanks!</p>
+								{activeRead == null ? '' : Parser(activeRead.content,{
+										replace: function(domNode) {
+											if (domNode.attribs && domNode.name === 'img') {
+												return <img src={domNode.attribs.src} style={{maxWidth:'100%',display:'block'}}/>
+											}
+											if (domNode.attribs && domNode.name === 'pre') {
+												console.log(domNode)
+												return <Highlight><pre>{domNode.children[0].data}</pre></Highlight>
+											}
+										}
+									}
+								)}
 							</div>
 							</div>
 						</div>
@@ -226,10 +290,14 @@ class CardList extends React.Component {
 						grid-template-columns: 25% 75%;
 					}
 
-					.reader {
-						border: 2px solid #eee;
+					.reader {						
+						display: none;
 						margin: 0px 10px;
 						position: relative;
+					}
+
+					.reader-block {
+						display: block;
 					}
 
 					.reader-inner {
@@ -237,15 +305,45 @@ class CardList extends React.Component {
 
 					.reader-inner-fixed {
 						position: fixed;
-						width: 58%;
-						top: 10px;
-
+						width: 58.5%;
+						top: 5px;
 					}
 
 					.reader .reader-tabs {
 						display: grid;
-						grid-gap: 20px;
-						grid-template-columns: repeat(5, 1fr);
+						grid-gap: 0px;
+						grid-template-columns: 30px repeat(5, 1fr) 30px;
+						cursor: pointer;
+					}
+
+					.reader-tabs .tab-name {
+						padding: 5px;
+						border: 1.5px solid #707070;
+						font-family: 'Questrial', sans-serif;
+						display: grid;
+						grid-template-columns: 80% 20%;
+					}
+
+					.reader-tabs .tab-name .tab-title {
+						white-space: nowrap;
+						overflow: hidden;
+					}
+
+					.reader-tabs .tab-name .close-tab {
+						text-align: center;
+					}
+
+					.reader-content {
+						font-family: 'Questrial', sans-serif;
+						padding: 20px;
+						height: 100vh;
+						overflow-y: scroll;
+						border: 2px solid #707070;
+					}
+
+					.active-tab {
+						background-color: #645F5F;
+						color: #fff;
 					}
 
 					.share-icon {
@@ -377,6 +475,7 @@ class CardList extends React.Component {
 						color: #fff;
 						font-size: 15px;
 						z-index: 9;
+						cursor: pointer;
 					}
 					.pagination {
 						margin: 0px auto;
