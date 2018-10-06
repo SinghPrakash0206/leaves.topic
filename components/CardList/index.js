@@ -142,37 +142,105 @@ class CardList extends React.Component {
 
 	addToReader = (topic) => {	
 		this.setState({isReaderActive: true})
-		this.setState({activeTabId: topic.id})
-		topic['activeTab'] = true
-		this.setState({activeRead: topic})
+
 		const activeTabs = this.state.activeTabs
-		activeTabs.push(topic)
-		const tabLength = activeTabs.length
-		let startTabIndex = 0;
-		let endTabIndex = 0;
-		if(tabLength > 5){
-			startTabIndex = tabLength - 5
-			endTabIndex = tabLength	
+		const index = activeTabs.findIndex(x => x.id == topic.id);
+		console.log(index)
+		if(index < 0){			
+			this.setState({activeTabId: topic.id})
+			topic['activeTab'] = true
+			this.setState({activeRead: topic})
+			activeTabs.push(topic)
+			const tabLength = activeTabs.length
+			let {startTabIndex, endTabIndex} = this.state
+			if(tabLength > 5){
+				startTabIndex = tabLength - 5
+				endTabIndex = tabLength - 1
 
-			for (var i = 0; i < activeTabs.length; i++) {
-				activeTabs[i]['activeTab'] = false
-			}
+				for (var i = 0; i < activeTabs.length - 1; i++) {
+					activeTabs[i]['activeTab'] = false
+				}
 
-			for (var i = startTabIndex; i < endTabIndex; i++) {
-				activeTabs[i]['activeTab'] = true
+				for (var i = startTabIndex; i < endTabIndex; i++) {
+					activeTabs[i]['activeTab'] = true
+				}
+			}else{
+				startTabIndex = 0
+				endTabIndex = tabLength - 1	
 			}
+			this.setState({startTabIndex:startTabIndex, endTabIndex:endTabIndex})
+
+			this.setState({activeTabs})
 		}else{
-			startTabIndex = 1
-			endTabIndex = tabLength			
+			this.setState({activeTabId: topic.id})
+			this.setState({activeRead: topic})	
 		}
-		this.setState({startTabIndex:startTabIndex, endTabIndex:endTabIndex})
 
-		this.setState({activeTabs})
 	}
 
 	changeTab = (topic) => {
 		this.setState({activeTabId: topic.id})
 		this.setState({activeRead: topic})		
+	}
+
+	moveTabLeft = ()  => {
+		if(this.state.startTabIndex > 0){
+			console.log('moving')
+			this.setState((prevState) => ({ startTabIndex: prevState.startTabIndex - 1, endTabIndex: prevState.endTabIndex - 1 }))
+			const activeTabs = this.state.activeTabs
+			for (var i = 0; i < activeTabs.length - 1; i++) {
+				activeTabs[i]['activeTab'] = false
+			}
+
+			for (var j = this.state.startTabIndex; j < this.state.endTabIndex; j++) {
+				activeTabs[j]['activeTab'] = true
+			}
+			this.setState({activeTabs})
+		}
+	}
+
+	moveTabRight = () => {
+		console.log(this.state.activeTabs.length)
+		console.log(this.state.endTabIndex)
+		if(this.state.endTabIndex > 5 && this.state.endTabIndex + 1 < this.state.activeTabs.length){
+			console.log('moveRight')
+		}
+	}
+
+	closeTab = (topic, index) => {
+		let {startTabIndex, endTabIndex} = this.state
+		var activeTabs = this.state.activeTabs
+		var remainTabs, activeTabId, activeRead;
+		if(activeTabs.length === 1){
+			remainTabs = []
+			activeRead = null
+			activeTabId = 1
+			this.setState({startTabIndex:0, endTabIndex:0, isReaderActive: false})
+		}else if(activeTabs.length > 5){
+				remainTabs = activeTabs.slice(0, index).concat(activeTabs.slice(index+1, activeTabs.length))
+				var currentTabsLength = remainTabs.length
+				startTabIndex = currentTabsLength - 5
+				endTabIndex = currentTabsLength - 1
+
+				for (var i = 0; i < currentTabsLength - 1; i++) {
+					remainTabs[i]['activeTab'] = false
+				}
+
+				for (var j = startTabIndex; j < endTabIndex; j++) {
+					remainTabs[j]['activeTab'] = true
+				}
+				this.setState({startTabIndex, endTabIndex})
+
+				activeRead = remainTabs[remainTabs.length -1]
+				activeTabId = remainTabs[remainTabs.length -1].id
+		}else{
+			remainTabs = activeTabs.slice(0, index).concat(activeTabs.slice(index+1, activeTabs.length))
+			activeRead = remainTabs[remainTabs.length -1]
+			activeTabId = remainTabs[remainTabs.length -1].id
+		}
+
+		this.setState({activeTabs: remainTabs, activeTabId, activeRead})	
+
 	}
 
 	render(props){
@@ -233,22 +301,22 @@ class CardList extends React.Component {
 						<div className={this.state.fixedReader ? 'reader-inner-fixed' : 'reader-inner'}>
 							<div className="reader-tabs">
 								<div className="tab-name">
-									<div className="tab-title">&lt;</div>
+									<div className="tab-title" onClick={this.moveTabLeft.bind(null)}>&lt;</div>
 									<div className="close-tab"></div>
 								</div>
 							{activeTabs.map((tab, index) => {
 								if(tab.activeTab){
 									return (
-									<div onClick={this.changeTab.bind(null, tab)} className={ tab.id === activeTabId ? 'tab-name active-tab' : 'tab-name'} key={tab.id}>
-										<div className="tab-title">{tab.title}</div>
-										<div className="close-tab">x</div>
+									<div className={ tab.id === activeTabId ? 'tab-name active-tab' : 'tab-name'} key={tab.id}>
+										<div className="tab-title" onClick={this.changeTab.bind(null, tab)}>{tab.title}</div>
+										<div className="close-tab" onClick={this.closeTab.bind(null, tab, index)}>x</div>
 									</div>
 									)
 								}
 							})}
 							{activeTabs.length > 5 ? 
 								(<div className="tab-name">
-									<div className="tab-title">&gt;</div>
+									<div className="tab-title" onClick={this.moveTabRight.bind(null)}>&gt;</div>
 									<div className="close-tab"></div>
 								</div>): ''
 							}
@@ -261,7 +329,6 @@ class CardList extends React.Component {
 												return <img src={domNode.attribs.src} style={{maxWidth:'100%',display:'block'}}/>
 											}
 											if (domNode.attribs && domNode.name === 'pre') {
-												console.log(domNode)
 												return <Highlight><pre>{domNode.children[0].data}</pre></Highlight>
 											}
 										}
