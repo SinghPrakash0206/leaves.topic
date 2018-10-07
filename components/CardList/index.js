@@ -185,16 +185,25 @@ class CardList extends React.Component {
 
 	moveTabLeft = ()  => {
 		if(this.state.startTabIndex > 0){
-			console.log('moving')
-			this.setState((prevState) => ({ startTabIndex: prevState.startTabIndex - 1, endTabIndex: prevState.endTabIndex - 1 }))
+
+
+			const {startTabIndex, endTabIndex} = this.state
 			const activeTabs = this.state.activeTabs
-			for (var i = 0; i < activeTabs.length - 1; i++) {
+			this.setState({startTabIndex: startTabIndex-1, endTabIndex: endTabIndex-1})
+
+
+			const index = activeTabs.findIndex(x => x.id == this.state.activeTabId);
+
+			for (var i = 0; i < activeTabs.length; i++) {
 				activeTabs[i]['activeTab'] = false
 			}
 
-			for (var j = this.state.startTabIndex; j < this.state.endTabIndex; j++) {
+			for (var j = startTabIndex-1; j <= endTabIndex-1; j++) {
 				activeTabs[j]['activeTab'] = true
 			}
+			this.setState({activeTabId: activeTabs[index-1].id})
+			this.setState({activeRead: activeTabs[index-1]})
+			
 			this.setState({activeTabs})
 		}
 	}
@@ -202,8 +211,26 @@ class CardList extends React.Component {
 	moveTabRight = () => {
 		console.log(this.state.activeTabs.length)
 		console.log(this.state.endTabIndex)
-		if(this.state.endTabIndex > 5 && this.state.endTabIndex + 1 < this.state.activeTabs.length){
-			console.log('moveRight')
+		if(this.state.endTabIndex > 3 && this.state.endTabIndex + 1 < this.state.activeTabs.length){
+			console.log('right')
+			const {startTabIndex, endTabIndex} = this.state
+			const activeTabs = this.state.activeTabs
+			this.setState({startTabIndex: startTabIndex+1, endTabIndex: endTabIndex+1})
+
+
+			const index = activeTabs.findIndex(x => x.id == this.state.activeTabId);
+			
+			for (var i = 0; i < activeTabs.length; i++) {
+				activeTabs[i]['activeTab'] = false
+			}
+
+			for (var j = startTabIndex+1; j <= endTabIndex+1; j++) {
+				activeTabs[j]['activeTab'] = true
+			}
+			this.setState({activeTabId: activeTabs[index+1].id})
+			this.setState({activeRead: activeTabs[index+1]})
+			
+			this.setState({activeTabs})
 		}
 	}
 
