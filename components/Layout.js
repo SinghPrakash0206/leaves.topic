@@ -1,5 +1,4 @@
 import Header from './Header'
-import Footer from './Footer'
 import Head from 'next/head'
 
 const Layout = (props) => (
@@ -19,17 +18,21 @@ const Layout = (props) => (
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Roboto+Mono:400,500|Questrial" rel="stylesheet"/>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css"/>
-		<link rel="stylesheet" href="http://127.0.0.1:8080/style.css"/>
 	    </Head>
+	    <div className="main-body">
 		<Header/>
 		<div className="content-inject">{props.children}</div>
-		<Footer />
+		</div>
 		<style jsx>{`
+			.main-body {
+				height: calc(100vh -100px)
+			}
 			body {
 				background-color: #fafafa;
 			}
 			.content-inject {
-				min-height: 100vh;
+				height: calc(100vh - 74px);
+				border: 2px solid red;
 			}
 		`}</style>
 	</div>
