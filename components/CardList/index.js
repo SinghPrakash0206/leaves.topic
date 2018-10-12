@@ -9,7 +9,8 @@ import {
   Pagination,
   Dropdown,
   Input,
-  Form
+  Form,
+  List
 } from "semantic-ui-react";
 import Router from "next/router";
 import Link from "next/link";
@@ -412,7 +413,7 @@ class CardList extends React.Component {
 
         <div className="container">
           <div className="navbar-drawer">
-            <ul>
+            <ul className="ul-list">
               {tagsList.length > 0
                 ? tagsList.map((tag, index) => (
                     <li key={index}>
@@ -500,6 +501,7 @@ class CardList extends React.Component {
                     type={type}
                   />
                 </div>
+                <div className="height-divider"></div>
                 </div>
                 <div
                   className={
@@ -589,6 +591,8 @@ class CardList extends React.Component {
                               }
                             }
                           })}
+
+           				<div className="height-divider"></div>
                     </div>
                   </div>
                 </div>
@@ -599,10 +603,21 @@ class CardList extends React.Component {
         <style jsx>{`
           .container .navbar-drawer {
             display: inline-block;
+            width: 0px;
+            float: left;
+            height: calc(100vh - 74px);
+            overflow: hidden;
+            background-color: #f6f8f9;
+          }
+
+			@media only screen and (min-width: 1100px) {
+				.container .navbar-drawer {
+            display: inline-block;
             width: 240px;
             float: left;
             height: calc(100vh - 74px);
-            overflow-y: scroll;
+            overflow: hidden;
+            background-color: #f6f8f9;
           }
 
           .container .content-section {
@@ -610,6 +625,41 @@ class CardList extends React.Component {
             width: calc(100% - 240px);
             float: right;
             height: calc(100vh - 74px);
+            margin-top: -10px
+          }
+			}
+
+          .ul-list {
+          	list-style: none;
+          	margin: 0;
+          	padding: 0;
+			height: calc(100vh - 74px);
+			margin-right: -16px !important;
+			overflow-y: scroll;
+			overflow-x: hidden;
+          }
+
+          .ul-list li {
+          	padding: 4px;
+          }
+
+          .ul-list li a{
+            font-family: "Questrial", sans-serif;
+          	color: #2d2c2c;
+          	font-size: 16px;
+          	display: block;
+          	padding-left: 10px;
+          }
+
+          .ul-list li:hover {
+          	background-color: #cdcdcd;
+          }
+
+          .container .content-section {
+            display: inline-block;
+            float: right;
+            height: calc(100vh - 74px);
+            margin-top: -10px
           }
 
           .card-section {
@@ -619,19 +669,40 @@ class CardList extends React.Component {
 
           .card-container .cards {
             display: grid;
-            grid-gap: 20px;
+            grid-gap: 10px;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            padding: 10px;
+			margin-right: -16px !important;
+			overflow-y: scroll;
+			overflow-x: hidden;
+          }
+
+          .height-divider {
+          	height: 100px;
+          }
+
+          .card-container {
+          	overflow: hidden;
           }
 
           .card-container-reader {
             display: grid;
             grid-template-columns: 25% 75%;
+            overflow: hidden;
+          }
+
+          .card-container-reader .cards {
+			margin-right: -27px !important;
+			overflow-y: scroll;
+			overflow-x: hidden;
+			padding-right: 5px;        	
           }
 
           .reader {
             display: none;
             margin: 0px 10px;
             position: relative;
+            background-color: #fff;
           }
 
           .reader-block {
@@ -817,6 +888,8 @@ class CardList extends React.Component {
           }
           .pagination {
             margin: 0px auto;
+            grid-column: 4/2;
+			text-align: center;
           }
 
           .search-box {
