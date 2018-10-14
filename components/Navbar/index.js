@@ -154,11 +154,11 @@ class TopicNavbar extends Component {
 			: ''}
 				<div className="nav">
 				<div className="nav-header">
+					<div className="tag-title hamburgur" id="hamburgur" onClick={this.handleTagBox}>
+						<Icon name='bars' size="large"/>
+					</div>
 					<div className="nav-title">
 						<i className="fa fa-leaf"></i><Link href="/"><a>Leaves</a></Link>
-					</div>
-					<div className="tag-title" onClick={this.handleTagBox}>
-						Tags
 					</div>
 				</div>
 				<div className="nav-btn">
@@ -184,7 +184,6 @@ class TopicNavbar extends Component {
 					</a>
 					<a className="navbar-links" onClick={this.openModalBox}>Add</a>
 					<a href="#" target="_blank">Login</a>
-					<a href="#" target="_blank">Logout</a>
 				</div>
 				</div>
 
@@ -192,18 +191,37 @@ class TopicNavbar extends Component {
 					<div className="close-tag-box" onClick={this.closeTagBox}>X</div>
 						<Input size='mini' type="url" required icon='search' onChange={this.searchTag.bind(this)} placeholder='Search...' />
 					<br/><br/>
-					<Grid>
-						<Grid.Row columns={6}>
-							{this.state.tagArray.length > 0 ? this.state.tagArray.map((tag, index)=> (
-								<Grid.Column key={index}>
+
+					<div className="mobile-tags-view">
+
+						{this.state.tagArray.length > 0 ? this.state.tagArray.map((tag, index)=> (
+								<div key={index}>
 									<Link href={`/topic/${tag.tagslug}`}><a>{tag.label}</a></Link>
-								</Grid.Column>
+								</div>
 							)): ''}
-						</Grid.Row>
-					</Grid>
+					</div>
 					<div className="space-divider"></div>
 				</div>	
 				<style jsx>{`
+.mobile-tags-view {
+
+display: grid;
+grid-gap: 20px;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+					@media only screen and (max-width: 800px) {
+						.nav-links a.search-menu {
+							display: none !important;
+						}		
+					}
+
+					@media screen and (min-width: 1100px) {
+					   #hamburgur {
+					     display: none;
+					   }
+					}
+
 					.topic-navbar {
 						background-color: #fafafa;
 						border-bottom: 1px solid #ebebeb;
@@ -228,28 +246,11 @@ class TopicNavbar extends Component {
 						cursor: pointer;
 					}
 
-					.nav > .nav-header > .tag-title {
+					.hamburgur {
 						display: inline-block;
 						font-size: 16px;
-						padding: 10px 10px 10px 10px;
 						cursor: pointer;		
-						margin-left: 30px;				
-					}
-
-					.nav > .nav-header > .tag-title:after {
-						width: 0;
-						height: 0;
-						content: '';
-						border-top: 4px solid currentColor;
-						border-left: 4px solid transparent;
-						border-right: 4px solid transparent;
-						border-bottom: 0;
-						margin-left: 0.5rem;
-						display: inline-block;
-						color: inherit;
-						height: 0;
-						width: 0;
-						vertical-align: middle;
+						margin-left: 0px;				
 					}
 
 					.nav > .nav-header > .nav-title a {
@@ -380,7 +381,7 @@ class TopicNavbar extends Component {
 							height: 0px;
 							transition: all 0.3s ease-in;
 							overflow-y: hidden;
-							top: 70px;
+							top: 60px;
 							left: 0px;
 							z-index: 999;
 							padding: 15px;

@@ -30,6 +30,7 @@ class CardList extends React.Component {
       activePage: this.props.data.activePage,
       linksCunt: this.props.data.linksCunt,
       tagsList: this.props.data.tagsList,
+      filterTagsArray: this.props.data.tagsList,
       type: this.props.data.type,
       paginationURL: this.props.data.paginationURL,
       pageCount: Math.ceil(this.props.data.linksCunt / 20),
@@ -317,6 +318,22 @@ class CardList extends React.Component {
     this.setState({ activeTabs: remainTabs, activeTabId, activeRead });
   };
 
+  filterTags = (e) => {
+    let tags = this.state.filterTagsArray
+    var filterTagsArray = []
+
+    if(!e.target.value){
+      this.setState({tagsList: this.state.filterTagsArray})
+    }else{
+    for (var i = 0; i < tags.length; i++) {
+      if(String(tags[i].title).includes(e.target.value)){
+        filterTagsArray.push(tags[i])
+      }
+    }
+    this.setState({tagsList:filterTagsArray})
+    }
+  }
+
   render(props) {
     const {
       topicList,
@@ -413,6 +430,7 @@ class CardList extends React.Component {
 
         <div className="container">
           <div className="navbar-drawer">
+          <Input className="search-tag-input" size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' />
             <ul className="ul-list">
               {tagsList.length > 0
                 ? tagsList.map((tag, index) => (
@@ -493,6 +511,8 @@ class CardList extends React.Component {
                       </div>
                     </div>
                   ))}
+                  {activePage > 0
+                    ?
                 <div className="pagination">
                   <TopicPagination
                     defaultActivePage={activePage}
@@ -501,6 +521,7 @@ class CardList extends React.Component {
                     type={type}
                   />
                 </div>
+                  : ''}
                 <div className="height-divider"></div>
                 </div>
                 <div
@@ -625,18 +646,26 @@ class CardList extends React.Component {
             width: calc(100% - 240px);
             float: right;
             height: calc(100vh - 74px);
-            margin-top: -10px
+            margin-top: -10px;
+            background-color: #fff
           }
 			}
+      @media only screen and (max-width: 1100px) {
+
+            #search-tag-input {
+              display: none !important;
+            }
+      }
 
           .ul-list {
           	list-style: none;
           	margin: 0;
           	padding: 0;
-			height: calc(100vh - 74px);
-			margin-right: -16px !important;
-			overflow-y: scroll;
-			overflow-x: hidden;
+      			height: calc(100vh - 74px);
+      			margin-right: -16px !important;
+      			overflow-y: scroll;
+      			overflow-x: hidden;
+            margin-top: 60px;
           }
 
           .ul-list li {
@@ -660,6 +689,7 @@ class CardList extends React.Component {
             float: right;
             height: calc(100vh - 74px);
             margin-top: -10px
+            background-color: #fff;
           }
 
           .card-section {
