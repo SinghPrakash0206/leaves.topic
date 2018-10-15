@@ -34,8 +34,17 @@ Topic.getInitialProps = async function(context) {
     tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')
     tagData[i]['title'] = tagData[i].label.split('.').join(' ')
   }
+
+
+  var links = data._embedded.items
+
+  for (var i = 0; i < links.length; i++) {
+    if(links[i].domain_name === "www.youtube.com"){
+      links[i].url = links[i].url.split("&url=")[1]
+    }
+  }
 	return {
-		list: data._embedded.items,
+		list: links,
 		tag: queryTag,
 		seoTitle: seoTitle,
 		seoDesc: 'Resources list of the '+seoTitle,

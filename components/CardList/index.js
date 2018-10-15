@@ -10,7 +10,8 @@ import {
   Dropdown,
   Input,
   Form,
-  List
+  List,
+  Button
 } from "semantic-ui-react";
 import Router from "next/router";
 import Link from "next/link";
@@ -34,6 +35,7 @@ class CardList extends React.Component {
       type: this.props.data.type,
       paginationURL: this.props.data.paginationURL,
       pageCount: Math.ceil(this.props.data.linksCunt / 20),
+      pageNumber: this.props.data.activePage,
       sharingLinks: [],
       linksIdsString: "",
       modalBoxOpen: false,
@@ -41,11 +43,11 @@ class CardList extends React.Component {
       gridRowClass: "",
       isReaderActive: false,
       activeTabs: [],
-      fixedReader: false,
       activeRead: null,
       startTabIndex: 0,
       endTabIndex: 0,
-      activeTabId: 1
+      activeTabId: 1,
+      isLoading: false
     };
   }
 
@@ -63,19 +65,6 @@ class CardList extends React.Component {
 
     window.addEventListener("scroll", this.handleScroll);
   }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  }
-
-  handleScroll = event => {
-    let scrollTop = event.srcElement.body.scrollTop;
-    if (this.state.isReaderActive && window.scrollY > 150) {
-      this.setState({ fixedReader: true });
-    } else {
-      this.setState({ fixedReader: false });
-    }
-  };
 
   openModalBox = () => {
     this.setState({ modalBoxOpen: true });
@@ -123,6 +112,40 @@ class CardList extends React.Component {
     } else {
       alert("Already in the bundle");
     }
+  }
+
+  loadMoreLeaves = (e) => {
+    let {pageNumber,queryTag, linksCunt, topicList} = this.state
+    if(topicList.length < linksCunt){
+
+    this.setState({isLoading: true})
+    pageNumber++
+    var url;
+    if(queryTag === "Latest Leaves"){
+      url = 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
+    }else {
+      url = 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
+    }
+    console.log(url)
+    var combinedArray;
+    axios.get(url)
+    .then((response) => {
+      // handle success
+      var loadMoreArray = response.data._embedded.items
+      combinedArray = [...topicList.slice(0, topicList.length), ...loadMoreArray.slice(0, loadMoreArray.length)]
+      console.log(combinedArray);
+      this.setState({pageNumber: pageNumber, topicList: combinedArray, isLoading: false})
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    })
+    .then(function () {
+      // always executed
+    });
+    }
+
+
   }
 
   copyBundleLink() {
@@ -358,23 +381,14 @@ class CardList extends React.Component {
         {sharingLinks.length > 0 ? (
           <div className="share-icon" onClick={this.openModalBox}>
             <div className="sharing-link-count">{sharingLinks.length}</div>
-            <Icon
-              className="icon-class"
-              link
-              name="share alternate"
-              size="large"
-            />
+            <Icon className="icon-class" link name="share alternate" size="large" />
           </div>
         ) : (
           ""
         )}
 
         {modalBoxOpen ? (
-          <div
-            className="add-leaf-outer"
-            onClick={this.clickOutModalBox.bind(this)}
-            id="outer"
-          >
+          <div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer" >
             <div className="add-leaf-modal">
               <div className="share-modal-title">Share This Bundle</div>
               <div className="share-link-list">
@@ -391,34 +405,14 @@ class CardList extends React.Component {
                 ))}
               </div>
               <br />
-              <Input
-                id="bundleLink"
-                fluid
-                icon={
-                  <Icon
-                    name="copy"
-                    onClick={this.copyBundleLink}
-                    inverted
-                    circular
-                    link
-                  />
-                }
-                value={`${hostUrl}/bundle/${linksIdsString}`}
+              <Input id="bundleLink" fluid icon={<Icon name="copy" onClick={this.copyBundleLink} inverted circular link />} value={`${hostUrl}/bundle/${linksIdsString}`}
               />
               <div id="copyMsg" />
               <div className="share-modal-btn" onClick={this.closeModalBox}>
-                <Icon
-                  className="icon-class"
-                  link
-                  name="window close"
-                  size="small"
-                />{" "}
+                <Icon className="icon-class" link name="window close" size="small" />{" "}
                 close
               </div>
-              <div
-                className="share-modal-btn"
-                onClick={this.cleanModalBox.bind(this)}
-              >
+              <div className="share-modal-btn" onClick={this.cleanModalBox.bind(this)} >
                 <Icon className="icon-class" link name="erase" size="small" />{" "}
                 clear
               </div>
@@ -445,20 +439,8 @@ class CardList extends React.Component {
           </div>
           <div className="content-section">
             <div className="card-content">
-              <div
-                className={
-                  this.state.isReaderActive
-                    ? "card-container-reader"
-                    : "card-container"
-                }
-              >
-                <div
-                  className="cards"
-                  style={{
-                    height: "calc(100vh - 74px)",
-                    "overflow-y": "scroll"
-                  }}
-                >
+              <div className={this.state.isReaderActive ? "card-container-reader" : "card-container" }>
+                <div className="cards" style={{ height: "calc(100vh - 74px)", "overflowY": "scroll" }} >
                   {topicList.map((topic, index) => (
                     <div className="card-list" key={topic.id}>
                       <div className="topic-card">
@@ -466,107 +448,57 @@ class CardList extends React.Component {
                           <div className="topic-transparent-layer">
                             <div className="show-this-layer">
                               <span>
-                                <Popup
-                                  trigger={
-                                    <Icon
-                                      onClick={this.addToBundle.bind(
-                                        this,
-                                        topic
-                                      )}
-                                      value={topic.url}
-                                      className="icon-class"
-                                      link
-                                      name="pin"
-                                      size="large"
-                                    />
-                                  }
-                                  content="Add to bundle & share"
-                                />
+                                <Popup trigger={ <Icon onClick={this.addToBundle.bind( this, topic )} value={topic.url} className="icon-class" link name="pin" size="large" /> } content="Add to bundle & share" />
                               </span>
                               <span>
                                 <a href={topic.url} target="_blank">
-                                  <Popup
-                                    trigger={
-                                      <Icon
-                                        className="icon-class"
-                                        link
-                                        name="external alternate"
-                                        size="large"
-                                      />
-                                    }
-                                    content="Original Resource"
-                                  />
+                                  <Popup trigger={ <Icon className="icon-class" link name="external alternate" size="large" /> } content="Original Resource" />
                                 </a>
                               </span>
                             </div>
                           </div>
                           <Image src={topic.preview_picture} />
                         </div>
-                        <div
-                          className="topic-content"
-                          onClick={this.addToReader.bind(null, topic)}
-                        >
+                        <div className="topic-content" onClick={this.addToReader.bind(null, topic)} >
                           {topic.title}
                         </div>
                       </div>
                     </div>
                   ))}
-                  {activePage > 0
+                <div className="height-divider"></div>
+                  {activePage > 0 && linksCunt > topicList.length
                     ?
                 <div className="pagination">
-                  <TopicPagination
-                    defaultActivePage={activePage}
-                    totalPages={pageCount}
-                    tag={queryTag}
-                    type={type}
-                  />
+                {this.state.isLoading ?
+                  <Button basic loading> Loading </Button>
+                :
+                <Button basic  onClick={this.loadMoreLeaves.bind(this)}> Load More Topics</Button>
+                }
                 </div>
                   : ''}
                 <div className="height-divider"></div>
                 </div>
-                <div
-                  className={
-                    this.state.isReaderActive ? "reader reader-block" : "reader"
-                  }
-                >
-                  <div
-                    className={
-                      this.state.fixedReader
-                        ? "reader-inner-fixed"
-                        : "reader-inner"
-                    }
-                  >
-                    <div className="reader-tabs">
-                      <div className="tab-name">
-                        <div
-                          className="tab-title"
-                          onClick={this.moveTabLeft.bind(null)}
-                        >
+                <div className={ this.state.isReaderActive ? "reader reader-block" : "reader" } >
+                  <div className="reader-inner" >
+                    <div className="reader-tabs">                      
+                      {activeTabs.length > 5 ? (
+                        <div className="tab-name">
+                        <div className="tab-title" onClick={this.moveTabLeft.bind(null)} >
                           &lt;
                         </div>
                         <div className="close-tab" />
                       </div>
+                      ) : (
+                        <div></div>
+                      )}
                       {activeTabs.map((tab, index) => {
                         if (tab.activeTab) {
                           return (
-                            <div
-                              className={
-                                tab.id === activeTabId
-                                  ? "tab-name active-tab"
-                                  : "tab-name"
-                              }
-                              key={tab.id}
-                            >
-                              <div
-                                className="tab-title"
-                                onClick={this.changeTab.bind(null, tab)}
-                              >
+                            <div className={ tab.id === activeTabId ? "tab-name active-tab" : "tab-name" } key={tab.id} >
+                              <div className="tab-title" onClick={this.changeTab.bind(null, tab)} >
                                 {tab.title}
                               </div>
-                              <div
-                                className="close-tab"
-                                onClick={this.closeTab.bind(null, tab, index)}
-                              >
+                              <div className="close-tab" onClick={this.closeTab.bind(null, tab, index)} >
                                 x
                               </div>
                             </div>
@@ -575,17 +507,17 @@ class CardList extends React.Component {
                       })}
                       {activeTabs.length > 5 ? (
                         <div className="tab-name">
-                          <div
-                            className="tab-title"
-                            onClick={this.moveTabRight.bind(null)}
-                          >
+                          <div className="tab-title" onClick={this.moveTabRight.bind(null)} >
                             &gt;
                           </div>
                           <div className="close-tab" />
                         </div>
                       ) : (
-                        ""
+                        <div></div>
                       )}
+                      <div>
+                        max
+                      </div>
                     </div>
                     <div className="reader-content">
                       {activeRead == null
@@ -594,13 +526,7 @@ class CardList extends React.Component {
                             replace: function(domNode) {
                               if (domNode.attribs && domNode.name === "img") {
                                 return (
-                                  <img
-                                    src={domNode.attribs.src}
-                                    style={{
-                                      maxWidth: "100%",
-                                      display: "block"
-                                    }}
-                                  />
+                                  <img src={domNode.attribs.src} style={{ maxWidth: "100%", display: "block" }} />
                                 );
                               }
                               if (domNode.attribs && domNode.name === "pre") {
@@ -658,30 +584,34 @@ class CardList extends React.Component {
       }
 
           .ul-list {
-          	list-style: none;
-          	margin: 0;
-          	padding: 0;
-      			height: calc(100vh - 74px);
-      			margin-right: -16px !important;
-      			overflow-y: scroll;
-      			overflow-x: hidden;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: calc(100vh - 74px);
+            margin-right: -16px !important;
+            overflow-y: scroll;
+            overflow-x: hidden;
             margin-top: 60px;
           }
 
+          .ul-list:hover {
+            margin-right: 0px !important;
+          }
+
           .ul-list li {
-          	padding: 4px;
+            padding: 4px;
           }
 
           .ul-list li a{
             font-family: "Questrial", sans-serif;
-          	color: #2d2c2c;
-          	font-size: 16px;
-          	display: block;
-          	padding-left: 10px;
+            color: #2d2c2c;
+            font-size: 16px;
+            display: block;
+            padding-left: 10px;
           }
 
           .ul-list li:hover {
-          	background-color: #cdcdcd;
+            background-color: #cdcdcd;
           }
 
           .container .content-section {
@@ -702,17 +632,16 @@ class CardList extends React.Component {
             grid-gap: 10px;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             padding: 10px;
-			margin-right: -16px !important;
-			overflow-y: scroll;
-			overflow-x: hidden;
+            overflow-y: scroll;
+            overflow-x: hidden;
           }
 
           .height-divider {
-          	height: 100px;
+            height: 100px;
           }
 
           .card-container {
-          	overflow: hidden;
+            overflow: hidden;
           }
 
           .card-container-reader {
@@ -720,6 +649,17 @@ class CardList extends React.Component {
             grid-template-columns: 25% 75%;
             overflow: hidden;
           }
+      @media only screen and (max-width: 800px) {
+        .card-container-reader .reader{
+          position: absolute;
+          top: 0;
+          z-index: 99;
+          margin: 0;
+        }
+        .reader-content {
+          height: 100vh !important; 
+        }
+      }
 
           .card-container-reader .cards {
 			margin-right: -27px !important;
@@ -751,7 +691,7 @@ class CardList extends React.Component {
           .reader .reader-tabs {
             display: grid;
             grid-gap: 0px;
-            grid-template-columns: 30px repeat(5, 1fr) 30px;
+            grid-template-columns: 30px repeat(5, 1fr) 30px 60px;
             cursor: pointer;
           }
 
