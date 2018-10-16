@@ -52,12 +52,9 @@ class CardList extends React.Component {
       isReaderActive: false,
       activeTabs: [],
       activeRead: null,
-      startTabIndex: 0,
-      endTabIndex: 0,
       activeTabId: 1,
       isLoading: false,
-      readerSelectArray: [],
-      mobileView: false
+      readerSelectArray: []
     };
   }
 
@@ -211,9 +208,8 @@ class CardList extends React.Component {
   }
 
   addToReader = topic => {
-    const isMobile = window.innerWidth <= 800;
-    const selectArray = this.state.readerSelectArray;
     const activeTabs = this.state.activeTabs;
+    const selectArray = this.state.readerSelectArray;
     const index = activeTabs.findIndex(x => x.id == topic.id);
     console.log(index);
     if (index < 0) {
@@ -223,34 +219,8 @@ class CardList extends React.Component {
       activeTabs.push(topic);
       const tabLength = activeTabs.length;
       let { startTabIndex, endTabIndex } = this.state;
-      if(isMobile){
-      this.setState({mobileView: true})
       selectArray.push({ key: topic.id, value: topic.id, text: topic.title })
       this.setState({ activeTabs, readerSelectArray: selectArray });
-      
-      }else{
-    this.setState({ isReaderActive: true });
-        if (tabLength > 5) {
-        startTabIndex = tabLength - 5;
-        endTabIndex = tabLength - 1;
-
-        for (var i = 0; i < activeTabs.length - 1; i++) {
-          activeTabs[i]["activeTab"] = false;
-        }
-
-        for (var i = startTabIndex; i < endTabIndex; i++) {
-          activeTabs[i]["activeTab"] = true;
-        }
-      } else {
-        startTabIndex = 0;
-        endTabIndex = tabLength - 1;
-      }
-      }
-
-
-      this.setState({ startTabIndex: startTabIndex, endTabIndex: endTabIndex });
-
-      this.setState({ activeTabs });
     } else {
       this.setState({ activeTabId: topic.id });
       this.setState({ activeRead: topic });
@@ -377,10 +347,6 @@ class CardList extends React.Component {
     }
   }
 
-  miniMobile = () => {
-    this.setState({mobileView: this.state.mobileView ? false : true})
-  }
-
   render(props) {
     const {
       topicList,
@@ -448,7 +414,7 @@ class CardList extends React.Component {
 
         <div className="container">
           <div className="navbar-drawer">
-          {this.state.mobileView ? <Input className="search-tag-input" size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' /> : ''}
+          <Input className="search-tag-input" size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' />
             <ul className="ul-list">
               {tagsList.length > 0
                 ? tagsList.map((tag, index) => (
@@ -463,7 +429,7 @@ class CardList extends React.Component {
           </div>
           <div className="content-section">
             <div className="card-content">
-              <div className={this.state.isReaderActive ? "card-container-reader" : "card-container" }>
+              <div className="card-container">
                 <div className="cards" style={{ height: "calc(100vh - 74px)", "overflowY": "scroll" }} >
                   {topicList.map((topic, index) => (
                     <div className="card-list" key={topic.id}>
@@ -506,79 +472,13 @@ class CardList extends React.Component {
                   : ''}
                 <div className="height-divider"></div>
                 </div>
-                <div className={ this.state.isReaderActive ? "reader reader-block" : "reader" } >
-                  <div className="reader-inner" >
-                    <div className="reader-tabs">                      
-                      {activeTabs.length > 5 ? (
-                        <div className="tab-name">
-                        <div className="tab-title" onClick={this.moveTabLeft.bind(null)} >
-                          &lt;
-                        </div>
-                        <div className="close-tab" />
-                      </div>
-                      ) : (
-                        <div></div>
-                      )}
-                      {activeTabs.map((tab, index) => {
-                        if (tab.activeTab) {
-                          return (
-                            <div className={ tab.id === activeTabId ? "tab-name active-tab" : "tab-name" } key={tab.id} >
-                              <div className="tab-title" onClick={this.changeTab.bind(null, tab)} >
-                                {tab.title}
-                              </div>
-                              <div className="close-tab" onClick={this.closeTab.bind(null, tab, index)} >
-                                x
-                              </div>
-                            </div>
-                          );
-                        }
-                      })}
-                      {activeTabs.length > 5 ? (
-                        <div className="tab-name">
-                          <div className="tab-title" onClick={this.moveTabRight.bind(null)} >
-                            &gt;
-                          </div>
-                          <div className="close-tab" />
-                        </div>
-                      ) : (
-                        <div></div>
-                      )}
-                      {/*<div className="reader-action-icon">
-                                              <Icon onClick="" name="window maximize outline"/>
-                                              <Icon onClick="" name="window minimize"/>
-                                            </div>*/}
-                    </div>
-                    <div className="reader-content">
-                      {activeRead == null
-                        ? ""
-                        : Parser(activeRead.content, {
-                            replace: function(domNode) {
-                              if (domNode.attribs && domNode.name === "img") {
-                                return (
-                                  <img src={domNode.attribs.src} style={{ maxWidth: "100%", display: "block" }} />
-                                );
-                              }
-                              if (domNode.attribs && domNode.name === "pre") {
-                                return (
-                                  <Highlight>
-                                    <pre>{domNode.children[0].data}</pre>
-                                  </Highlight>
-                                );
-                              }
-                            }
-                          })}
-
-           				<div className="height-divider"></div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
-          <div className={ this.state.mobileView ? "mobile-reader" : "reader" } >
+
+                <div className={ this.state.isReaderActive ? "reader-block" : "reader" } >
                   <div className="reader-inner" >
                     <Select placeholder='Select your country' options={this.state.readerSelectArray} />
-                    {this.state.mobileView ? <Icon name="window minimize" onClick={this.miniMobile.bind(this)}/> : <Icon name="window maximize outline" onClick={this.miniMobile.bind(this)}/>}
                     <div className="reader-content">
                       {activeRead == null
                         ? ""
@@ -603,7 +503,6 @@ class CardList extends React.Component {
                     </div>
                   </div>
                 </div>
-
         </div>
         <style jsx>{`
           .container .navbar-drawer {
@@ -739,8 +638,7 @@ class CardList extends React.Component {
             grid-template-columns: 25% 75%;
             overflow: hidden;
           }
-      @media only screen and (max-width: 800px) {
-        .card-container-reader .reader{
+        .reader{
           position: absolute;
           top: 0;
           z-index: 999;
@@ -749,8 +647,6 @@ class CardList extends React.Component {
         .reader-content {
           height: 100vh !important; 
         }
-        .reader-is-minimized {}
-      }
 
           .card-container-reader .cards {
 			margin-right: -27px !important;
@@ -760,24 +656,17 @@ class CardList extends React.Component {
           }
 
           .reader {
-            position: fixed;
-            height: 35px;
-            bottom: 0;
-            width: 100%;
-            z-index: 999;
-            background-color: #eee;
-          }
-
-          .mobile-reader {
-            display: block !important;
-            position: absolute;
-            top: 0;
+            display: none;
+            margin: 0px 10px;
+            position: relative;
             background-color: #fff;
-            z-index: 999;
           }
 
           .reader-block {
-            display: block;
+            display: block !important;
+            position: absolute;
+            top: 0;
+            z-index: 999;
           }
 
           .reader-inner {

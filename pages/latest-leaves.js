@@ -1,21 +1,25 @@
-import Layout from '../components/Layout'
+import React, { Component } from 'react'
 import { withRouter } from 'next/router'
+import Layout from '../components/Layout'
 import CardList from '../components/CardList/'
 import TopicNavbar from '../components/Navbar/'
 import Link from 'next/link'
 
 
-const Topic = withRouter((props) => (
-	<div>
-		<TopicNavbar/>
-		<Layout title={`${props.seoTitle}`} description={props.seoDesc}>
-			<CardList data={props}/>
-		</Layout>
-	</div>
-))
+class LatestTopics extends Component {
 
-Topic.getInitialProps = async function(context) {
-	var page_no;
+  constructor(props){
+    super(props)
+    this.state = {
+
+    }
+  }
+
+  componentDidMount(){
+  }
+
+  static async getInitialProps(context) {
+ 	var page_no;
 	if(context.query.page_no === undefined) {
 		page_no = 1
 	}else{
@@ -56,6 +60,19 @@ Topic.getInitialProps = async function(context) {
 		type: 'latest-leaves',
     	tagsList: tagData
 	}
+  }
+
+
+  render(props) {
+    return (
+     <div>
+		<TopicNavbar/>
+		<Layout title={this.props.seoTitle} description={this.props.seoDesc}>
+			<CardList data={this.props}/>
+		</Layout>
+	</div>
+    )
+  }
 }
 
-export default Topic
+export default LatestTopics
