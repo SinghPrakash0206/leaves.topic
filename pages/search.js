@@ -26,7 +26,7 @@ class Search extends React.Component {
 		const activePage = 1
 		const searchingQuery = context.query.search_query
 
-		const res = await fetch('https://ss346483-us-east-1-aws.searchstax.com/solr/leaves_anant_stage/select?q='+searchingQuery+'&rows=20&start='+ (page_no-1)*20)
+		const res = await fetch('http://stage.leaves.anant.us/solr/select?q='+searchingQuery+'&rows=20&start='+ (page_no-1)*20)
 
 		const data = await res.json();
 		console.log(data.response.numFound)

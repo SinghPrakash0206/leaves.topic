@@ -19,7 +19,13 @@ import TopicPagination from "../Pagination";
 import axios from "axios";
 import Parser from "html-react-parser";
 import Highlight from "react-highlight";
-console.log(process.env.BASE_URL)
+import { format, distanceInWordsToNow, formatRelative, subDays } from 'date-fns'
+
+
+
+const convertDate = (date) => {
+  return distanceInWordsToNow(date, {includeSeconds: true,addSuffix: true});
+}
 
 class CardList extends React.Component {
   constructor(props) {
@@ -445,8 +451,8 @@ class CardList extends React.Component {
                   {topicList.map((topic, index) => (
                     <div className="card-list" key={topic.id}>
                       <div className="topic-card">
-                        <div className="topic-image">
-                          <div className="topic-transparent-layer">
+                        <div className="topic-image" onClick={this.addToReader.bind(null, topic)}>
+                          <div className="topic-transparent-layer" style={{backgroundImage: `url(${topic.preview_picture})`, backgroundSize: 'contain'}}>
                             <div className="show-this-layer">
                               <span>
                                 <Popup trigger={ <Icon onClick={this.addToBundle.bind( this, topic )} value={topic.url} className="icon-class" link name="pin" size="large" /> } content="Add to bundle & share" />
@@ -458,12 +464,16 @@ class CardList extends React.Component {
                               </span>
                             </div>
                           </div>
-                          <Image src={topic.preview_picture} />
-                        </div>
-                        <div className="topic-content" onClick={this.addToReader.bind(null, topic)} >
-                          {topic.title}
                         </div>
                       </div>
+                        <div className="topic-content" onClick={this.addToReader.bind(null, topic)} >
+                          <div className="title">{topic.title}</div>
+                          <div className="domain_name">{topic.domain_name}</div>
+                          <ul className="leaves-meta">
+                            <li><Icon name="calendar outline"/> {convertDate(topic.created_at)}</li>
+                            <li><Icon name="file alternate outline"/> Read</li>
+                          </ul>                       
+                        </div>
                     </div>
                   ))}
                 <div className="height-divider"></div>
@@ -516,9 +526,10 @@ class CardList extends React.Component {
                       ) : (
                         <div></div>
                       )}
-                      <div>
-                        max
-                      </div>
+                      {/*<div className="reader-action-icon">
+                                              <Icon onClick="" name="window maximize outline"/>
+                                              <Icon onClick="" name="window minimize"/>
+                                            </div>*/}
                     </div>
                     <div className="reader-content">
                       {activeRead == null
@@ -583,6 +594,17 @@ class CardList extends React.Component {
               display: none !important;
             }
       }
+
+        .leaves-meta {
+          padding: 0;
+          list-style: none;
+          margin: 0;
+          opacity: 0.6
+        }
+        .leaves-meta li {
+          display: inline-block;
+          padding: 5px 5px 5px 0px;
+        }
 
           .ul-list {
             list-style: none;
@@ -654,12 +676,13 @@ class CardList extends React.Component {
         .card-container-reader .reader{
           position: absolute;
           top: 0;
-          z-index: 99;
+          z-index: 999;
           margin: 0;
         }
         .reader-content {
           height: 100vh !important; 
         }
+        .reader-is-minimized {}
       }
 
           .card-container-reader .cards {
@@ -692,7 +715,7 @@ class CardList extends React.Component {
           .reader .reader-tabs {
             display: grid;
             grid-gap: 0px;
-            grid-template-columns: 30px repeat(5, 1fr) 30px 60px;
+            grid-template-columns: 30px repeat(5, 1fr) 30px;
             cursor: pointer;
           }
 
@@ -713,6 +736,9 @@ class CardList extends React.Component {
             text-align: center;
           }
 
+          .reader-action-icon {
+            text-align: center;
+          }
           .reader-content {
             font-family: "Questrial", sans-serif;
             padding: 20px;
@@ -802,7 +828,7 @@ class CardList extends React.Component {
           }
           .topic-card {
             position: relative;
-            height: 200px;
+            height: 160px;
             margin-bottom: 10px;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
           }
@@ -810,13 +836,13 @@ class CardList extends React.Component {
             vertical-align: middle;
           }
           .topic-image {
-            height: 200px;
+            height: 160px;
             overflow: hidden;
           }
           .topic-transparent-layer {
             position: absolute;
             width: 100%;
-            height: 200px;
+            height: 160px;
             border: 1px solid #000;
             background-color: rgba(0, 0, 0, 0.3);
             z-index: 1;
@@ -856,6 +882,13 @@ class CardList extends React.Component {
             font-size: 15px;
             z-index: 9;
             cursor: pointer;
+          }
+          .topic-content .title {
+            cursor: pointer;
+            font-size: 1.2rem;
+            max-height: 3.2rem;
+            overflow: hidden;
+            font-family: "Questrial", sans-serif;
           }
           .pagination {
             margin: 0px auto;
