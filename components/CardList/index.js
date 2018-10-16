@@ -19,6 +19,7 @@ import TopicPagination from "../Pagination";
 import axios from "axios";
 import Parser from "html-react-parser";
 import Highlight from "react-highlight";
+console.log(process.env.BASE_URL)
 
 class CardList extends React.Component {
   constructor(props) {
@@ -122,9 +123,9 @@ class CardList extends React.Component {
     pageNumber++
     var url;
     if(queryTag === "Latest Leaves"){
-      url = 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
+      url = process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
     }else {
-      url = 'http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
+      url = process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
     }
     console.log(url)
     var combinedArray;

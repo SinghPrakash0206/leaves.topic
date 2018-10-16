@@ -23,12 +23,12 @@ Topic.getInitialProps = async function(context) {
 	}
 	const queryTag = 'Latest Leaves'
 	const seoTitle = 'Latest Leaves | Ananr.us - Anant Leaves'
-	const res = await fetch('http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw&order=desc&page=1&sort=created&perPage=20&page='+page_no)
+	const res = await fetch(process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+page_no)
 
 	const data = await res.json();
 
 
-  const tagRes = await fetch('http://leaves.anant.us:82/api/tags?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw')
+  const tagRes = await fetch(process.env.BASE_URL+ 'api/tags?access_token='+process.env.ACCESS_TOKEN)
   const tagData = await tagRes.json()
   for (var i = 0; i < tagData.length; i++) {
     tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')
