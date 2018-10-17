@@ -384,7 +384,6 @@ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 							top: 60px;
 							left: 0px;
 							z-index: 999;
-							padding: 15px;
 						}
 						.nav > .nav-links > a {
 							display: block;

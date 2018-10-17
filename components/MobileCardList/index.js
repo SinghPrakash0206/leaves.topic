@@ -219,6 +219,7 @@ class CardList extends React.Component {
       activeTabs.push(topic);
       const tabLength = activeTabs.length;
       let { startTabIndex, endTabIndex } = this.state;
+      
       selectArray.push({ key: topic.id, value: topic.id, text: topic.title })
       this.setState({ activeTabs, readerSelectArray: selectArray });
     } else {

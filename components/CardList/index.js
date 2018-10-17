@@ -57,7 +57,8 @@ class CardList extends React.Component {
       activeTabId: 1,
       isLoading: false,
       readerSelectArray: [],
-      mobileView: false
+      mobileView: false,
+      listOpen: false
     };
   }
 
@@ -224,12 +225,16 @@ class CardList extends React.Component {
       const tabLength = activeTabs.length;
       let { startTabIndex, endTabIndex } = this.state;
       if(isMobile){
-      this.setState({mobileView: true})
-      selectArray.push({ key: topic.id, value: topic.id, text: topic.title })
-      this.setState({ activeTabs, readerSelectArray: selectArray });
+        this.setState({mobileView: true})
+        selectArray.push({ key: topic.id, value: topic.id, text: topic.title })
+        for (var i = 0; i < activeTabs.length - 1; i++) {
+          activeTabs[i]["activeTab"] = false;
+        }
+        activeTabs[activeTabs.length - 1]["activeTab"] = true;
+        this.setState({ activeTabs, readerSelectArray: selectArray });
       
       }else{
-    this.setState({ isReaderActive: true });
+        this.setState({ isReaderActive: true });
         if (tabLength > 5) {
         startTabIndex = tabLength - 5;
         endTabIndex = tabLength - 1;
@@ -252,8 +257,20 @@ class CardList extends React.Component {
 
       this.setState({ activeTabs });
     } else {
+        if(isMobile){
+    this.setState({mobileView: true})
+        for (var i = 0; i < activeTabs.length - 1; i++) {
+          activeTabs[i]["activeTab"] = false;
+        }
+        const index = activeTabs.findIndex(x => x.id == topic.id);
+        activeTabs[index]["activeTab"] = true;
+        this.setState({activeTabs, activeRead: activeTabs[index], activeTabId: topic.id})
+
+        }else{
+
       this.setState({ activeTabId: topic.id });
       this.setState({ activeRead: topic });
+        }
     }
   };
 
@@ -379,6 +396,14 @@ class CardList extends React.Component {
 
   miniMobile = () => {
     this.setState({mobileView: this.state.mobileView ? false : true})
+  }
+
+  selectReaderTab = (e) => {
+    const topicId = e.target.value
+    const activeTabs = this.state.activeTabs
+    const index = activeTabs.findIndex(x => x.id == topicId);
+    console.log(index)
+    this.setState({activeRead: activeTabs[index]})
   }
 
   render(props) {
@@ -575,10 +600,21 @@ class CardList extends React.Component {
               </div>
             </div>
           </div>
-          <div className={ this.state.mobileView ? "mobile-reader" : "reader" } >
+          {activeTabs.length > 0 ? 
+          <div className={ this.state.mobileView ? "mobile-reader" : "mini-reader" } >
                   <div className="reader-inner" >
-                    <Select placeholder='Select your country' options={this.state.readerSelectArray} />
-                    {this.state.mobileView ? <Icon name="window minimize" onClick={this.miniMobile.bind(this)}/> : <Icon name="window maximize outline" onClick={this.miniMobile.bind(this)}/>}
+                  <div className="mobile-reader-head">
+                  <div className="mobile-reader-tabs">
+                  <select onChange={this.selectReaderTab.bind(this)}>
+                  {this.state.activeTabs ? this.state.activeTabs.map((tab, index) => (
+                    tab.activeTab ? <option key={tab.id} value={tab.id} id={index} index={index} selected>{tab.title}</option> : <option key={tab.id} value={tab.id}>{tab.title}</option>
+                  )): ''}
+                  </select>
+                  </div>
+                  <div className="head-icons">{this.state.mobileView ? <Icon name="window minimize" onClick={this.miniMobile.bind(this)}/> : <Icon name="window maximize outline" onClick={this.miniMobile.bind(this)}/>}</div>
+                  </div>
+                  
+
                     <div className="reader-content">
                       {activeRead == null
                         ? ""
@@ -586,7 +622,7 @@ class CardList extends React.Component {
                             replace: function(domNode) {
                               if (domNode.attribs && domNode.name === "img") {
                                 return (
-                                  <img src={domNode.attribs.src} style={{ maxWidth: "100%", display: "block" }} />
+                                  <img src={domNode.attribs.src} style={{ maxWidth: "100%", height: "auto", display: "block" }} />
                                 );
                               }
                               if (domNode.attribs && domNode.name === "pre") {
@@ -603,400 +639,400 @@ class CardList extends React.Component {
                     </div>
                   </div>
                 </div>
+                :''}
 
         </div>
         <style jsx>{`
-          .container .navbar-drawer {
-            display: inline-block;
-            width: 0px;
-            float: left;
-            height: calc(100vh - 74px);
-            overflow: hidden;
-            background-color: #f6f8f9;
-          }
-
-			@media only screen and (min-width: 1100px) {
-				.container .navbar-drawer {
-            display: inline-block;
-            width: 240px;
-            float: left;
-            height: calc(100vh - 74px);
-            overflow: hidden;
-            background-color: #f6f8f9;
-          }
-
-          .container .content-section {
-            display: inline-block;
-            width: calc(100% - 240px);
-            float: right;
-            height: calc(100vh - 74px);
-            margin-top: -10px;
-            background-color: #fff
-          }
-			}
-      @media only screen and (max-width: 1100px) {
-
-            #search-tag-input {
-              display: none !important;
+         .container .navbar-drawer {
+             display: inline-block;
+             width: 0px;
+             float: left;
+             height: calc(100vh - 74px);
+             overflow: hidden;
+             background-color: #f6f8f9;
+        }
+         @media only screen and (min-width: 1100px) {
+             .container .navbar-drawer {
+                 display: inline-block;
+                 width: 240px;
+                 float: left;
+                 height: calc(100vh - 74px);
+                 overflow: hidden;
+                 background-color: #f6f8f9;
             }
-      }
-
-        .leaves-meta {
-          padding: 0;
-          list-style: none;
-          margin: 0;
-          opacity: 0.6
+             .container .content-section {
+                 display: inline-block;
+                 width: calc(100% - 240px);
+                 float: right;
+                 height: calc(100vh - 74px);
+                 margin-top: -10px;
+                 background-color: #fff 
+            }
         }
-        .leaves-meta li {
-          display: inline-block;
-          padding: 5px 5px 5px 0px;
+         @media only screen and (max-width: 1100px) {
+             #search-tag-input {
+                 display: none !important;
+            }
+        }
+         .leaves-meta {
+             padding: 0;
+             list-style: none;
+             margin: 0;
+             opacity: 0.6 
+        }
+         .leaves-meta li {
+             display: inline-block;
+             padding: 5px 5px 5px 0px;
+        }
+         .ul-list {
+             list-style: none;
+             margin: 0;
+             padding: 0;
+             height: calc(100vh - 74px);
+             margin-right: -16px !important;
+             overflow-y: scroll;
+             overflow-x: hidden;
+             margin-top: 60px;
+        }
+         .ul-list:hover {
+             margin-right: 0px !important;
+        }
+         .ul-list li {
+             padding: 4px;
+        }
+         .ul-list li a{
+             font-family: "Questrial", sans-serif;
+             color: #2d2c2c;
+             font-size: 16px;
+             display: block;
+             padding-left: 10px;
+        }
+         .ul-list li:hover {
+             background-color: #cdcdcd;
+        }
+         .container .content-section {
+             display: inline-block;
+             float: right;
+             height: calc(100vh - 74px);
+             margin-top: -10px background-color: #fff;
+        }
+         .card-section {
+             max-width: 80%;
+             margin: 0px auto;
+        }
+         .card-container .cards {
+             display: grid;
+             grid-gap: 10px;
+             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+         @media only screen and (max-width: 800px) {
+             .card-container .cards {
+                 display: block;
+            }
+             .card-container .cards .card-list {
+                 width: 50%;
+                 display: inline-block;
+                 padding: 10px;
+            }
+        }
+         @media only screen and (max-width: 500px) {
+             .card-container .cards {
+                 display: block;
+            }
+             .card-container .cards .card-list {
+                 width: 100%;
+                 display: inline-block;
+                 padding: 10px;
+            }
+        }
+         .height-divider {
+             height: 50px;
+        }
+         .card-container {
+             overflow: hidden;
+        }
+         .card-container-reader {
+             display: grid;
+             grid-template-columns: 25% 75%;
+             overflow: hidden;
+        }
+         @media only screen and (max-width: 800px) {
+             .card-container-reader .reader{
+                 position: absolute;
+                 top: 0;
+                 z-index: 999;
+                 margin: 0;
+            }
+             .reader-content {
+                 height: 100vh !important;
+            }
+             .reader-is-minimized {
+            }
+        }
+         .card-container-reader .cards {
+             margin-right: -27px !important;
+             overflow-y: scroll;
+             overflow-x: hidden;
+             padding-right: 5px;
+        }
+         .reader {
+             display: none;
+             margin: 0px 10px;
+             position: relative;
+             background-color: #fff;
         }
 
-          .ul-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            height: calc(100vh - 74px);
-            margin-right: -16px !important;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            margin-top: 60px;
-          }
-
-          .ul-list:hover {
-            margin-right: 0px !important;
-          }
-
-          .ul-list li {
-            padding: 4px;
-          }
-
-          .ul-list li a{
-            font-family: "Questrial", sans-serif;
-            color: #2d2c2c;
-            font-size: 16px;
-            display: block;
-            padding-left: 10px;
-          }
-
-          .ul-list li:hover {
-            background-color: #cdcdcd;
-          }
-
-          .container .content-section {
-            display: inline-block;
-            float: right;
-            height: calc(100vh - 74px);
-            margin-top: -10px
-            background-color: #fff;
-          }
-
-          .card-section {
-            max-width: 80%;
-            margin: 0px auto;
-          }
-
-          .card-container .cards {
-            display: grid;
-            grid-gap: 10px;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          }
-
-           @media only screen and (max-width: 800px) {
-            .card-container .cards {
-            display: block;
-
-          }
-          .card-container .cards .card-list {
-            width: 50%;
-            display: inline-block;
-            padding: 10px;
-           }
-          }
-
-           @media only screen and (max-width: 500px) {
-            .card-container .cards {
-            display: block;
-
-          }
-          .card-container .cards .card-list {
-            width: 100%;
-            display: inline-block;
-            padding: 10px;
-           }
-          }
-
-          .height-divider {
-            height: 100px;
-          }
-
-          .card-container {
-            overflow: hidden;
-          }
-
-          .card-container-reader {
-            display: grid;
-            grid-template-columns: 25% 75%;
-            overflow: hidden;
-          }
-      @media only screen and (max-width: 800px) {
-        .card-container-reader .reader{
-          position: absolute;
-          top: 0;
-          z-index: 999;
-          margin: 0;
-        }
-        .reader-content {
-          height: 100vh !important; 
-        }
-        .reader-is-minimized {}
-      }
-
-          .card-container-reader .cards {
-			margin-right: -27px !important;
-			overflow-y: scroll;
-			overflow-x: hidden;
-			padding-right: 5px;        	
-          }
-
-          .reader {
-            position: fixed;
-            height: 35px;
-            bottom: 0;
-            width: 100%;
-            z-index: 999;
-            background-color: #eee;
-          }
-
-          .mobile-reader {
-            display: block !important;
-            position: absolute;
-            top: 0;
-            background-color: #fff;
-            z-index: 999;
-          }
-
-          .reader-block {
-            display: block;
-          }
-
-          .reader-inner {
-          }
-
-          .reader-inner-fixed {
-            position: fixed;
-            width: 58.5%;
-            top: 5px;
-          }
-
-          .reader .reader-tabs {
-            display: grid;
-            grid-gap: 0px;
-            grid-template-columns: 30px repeat(5, 1fr) 30px;
-            cursor: pointer;
-          }
-
-          .reader-tabs .tab-name {
-            padding: 5px;
-            border: 1.5px solid #707070;
-            font-family: "Questrial", sans-serif;
-            display: grid;
-            grid-template-columns: 80% 20%;
-          }
-
-          .reader-tabs .tab-name .tab-title {
-            white-space: nowrap;
-            overflow: hidden;
-          }
-
-          .reader-tabs .tab-name .close-tab {
-            text-align: center;
-          }
-
-          .reader-action-icon {
-            text-align: center;
-          }
-          .reader-content {
-            font-family: "Questrial", sans-serif;
-            padding: 20px;
-            height: calc(100vh - 105px);
-            overflow-y: scroll;
-            border: 2px solid #707070;
-          }
-
-          .active-tab {
-            background-color: #645f5f;
-            color: #fff;
-          }
-
-          .share-icon {
-            position: fixed;
-            right: 10px;
-            top: 100px;
-          }
-
-          .sharing-link-count {
-            background-color: #eee;
-            border-radius: 4px;
-            position: relative;
-            right: 18px;
-            padding: 5px;
-            z-index: 0;
-            cursor: pointer;
-          }
-
-          .share-link-list {
-            max-height: 400px;
-            overflow-y: scroll;
-          }
-
-          .share-modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            font-family: "Roboto Mono", monospace;
-          }
-
-          .share-modal-btn {
-            font-size: 16px;
-            background-color: #eee;
-            padding: 3px 10px;
-            display: inline-block;
-            border-radius: 3px;
-            margin-top: 20px;
-            cursor: pointer;
-            margin-right: 10px;
-          }
-
-          .link-list {
-            padding: 5px;
-            background-color: #eee;
-            margin: 3px;
-          }
-
-          .remove-link {
-            float: right;
-            background-color: #8d8d8e;
-            color: #fff;
-            padding: 1px 7px;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-          }
-
-          .copy-bundle-link {
-            width: 100%;
-            margin-top: 20px;
-            padding: 6px;
-            border: 2px solid #333;
-          }
-
-          .topic-label {
-            font-size: 30px;
-            font-weight: 700;
-            font-family: "Roboto Mono", monospace;
-            color: #2d2c2c;
-            opacity: 0.8;
-            width: 100%;
-            padding: 20px 0px 10px 10px;
-            letter-spacing: -2px;
-            word-spacing: -12px;
-          }
-          .topic-card {
-            position: relative;
-            height: 160px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-          }
-          .topic-image img {
-            vertical-align: middle;
-          }
-          .topic-image {
-            height: 160px;
-            overflow: hidden;
-          }
-          .topic-transparent-layer {
-            position: absolute;
-            width: 100%;
-            height: 160px;
-            border: 1px solid #000;
-            background-color: rgba(0, 0, 0, 0.3);
-            z-index: 1;
-          }
-          .topic-transparent-layer .show-this-layer {
-            color: #fff;
+        @media only screen and (min-width: 1100px) {
+          .mini-reader {
             display: none;
           }
-          .show-this-layer a {
-            color: #fff;
-          }
-          .show-this-layer span {
-            background-color: #4d4d4d;
-            padding: 9px 2px 9px 5px;
-            border-radius: 50%;
-            margin: 5px;
-          }
-          .show-this-layer {
-            margin-top: 60px;
-            display: inline-block;
-            text-align: center;
-          }
-          .show-this-layer .icon-class {
-            background-color: rgba(0, 0, 0, 0.5);
-          }
-          .topic-transparent-layer:hover .show-this-layer {
-            display: block;
-          }
-          .topic-card .topic-content {
-            position: absolute;
-            bottom: 0;
-            padding: 10px;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            font-family: "Roboto Mono", monospace;
-            color: #fff;
-            font-size: 15px;
-            z-index: 9;
-            cursor: pointer;
-          }
-          .topic-content .title {
-            cursor: pointer;
-            font-size: 1.2rem;
-            max-height: 3.2rem;
-            overflow: hidden;
-            font-family: "Questrial", sans-serif;
-          }
-          .pagination {
-            margin: 0px auto;
-            grid-column: 4/2;
-			text-align: center;
-          }
+        }
+         .mini-reader {
+             position: fixed;
+             height: 32px;
+             bottom: 0;
+             width: 100%;
+             z-index: 999;
+             background-color: #eee;
+        }
+         .mobile-reader {
+             display: block !important;
+             position: absolute;
+             top: 0;
+             background-color: #fff;
+             z-index: 999;
+             width: 100%;
+             height: 100vh;
+        }
 
-          .search-box {
-            padding-top: 20px;
-          }
+        .mobile-reader-head {
+          display: grid;
+          grid-template-columns: 90% 10%;
+          align-items: center;
+        }
 
-          .add-leaf-modal {
-            border: 1px solid #eee;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: 0px auto;
-            background-color: #fff;
-            padding: 20px;
-          }
+        .mobile-reader-tabs select {
+          width: 100%;
+          font-size: 1em;
+        }
 
-          .add-leaf-outer {
-            position: fixed;
-            z-index: 99;
-            padding-top: 100px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-          }
+        .mobile-reader-tabs select{
+          font-size: 17px;
+          padding: 5px;
+         font-family: "Questrial", sans-serif;
+        }
+
+        .head-icons{
+          text-align: center;
+          font-size: 18px;
+          background-color: #eee;
+          cursor: pointer;
+          height: 100%;
+          align-items: center;
+        }
+
+         .reader-block {
+             display: block;
+        }
+         .reader-inner {
+        }
+         .reader-inner-fixed {
+             position: fixed;
+             width: 58.5%;
+             top: 5px;
+        }
+         .reader .reader-tabs {
+             display: grid;
+             grid-gap: 0px;
+             grid-template-columns: 30px repeat(5, 1fr) 30px;
+             cursor: pointer;
+        }
+         .reader-tabs .tab-name {
+             padding: 5px;
+             border: 1.5px solid #707070;
+             font-family: "Questrial", sans-serif;
+             display: grid;
+             grid-template-columns: 80% 20%;
+        }
+         .reader-tabs .tab-name .tab-title {
+             white-space: nowrap;
+             overflow: hidden;
+        }
+         .reader-tabs .tab-name .close-tab {
+             text-align: center;
+        }
+         .reader-action-icon {
+             text-align: center;
+        }
+         .reader-content {
+             font-family: "Questrial", sans-serif;
+             padding: 20px;
+             height: calc(100vh - 105px);
+             overflow-y: scroll;
+             border: 2px solid #707070;
+        }
+         .active-tab {
+             background-color: #645f5f;
+             color: #fff;
+        }
+         .share-icon {
+             position: fixed;
+             right: 10px;
+             top: 100px;
+        }
+         .sharing-link-count {
+             background-color: #eee;
+             border-radius: 4px;
+             position: relative;
+             right: 18px;
+             padding: 5px;
+             z-index: 0;
+             cursor: pointer;
+        }
+         .share-link-list {
+             max-height: 400px;
+             overflow-y: scroll;
+        }
+         .share-modal-title {
+             font-size: 20px;
+             font-weight: 700;
+             margin-bottom: 20px;
+             font-family: "Roboto Mono", monospace;
+        }
+         .share-modal-btn {
+             font-size: 16px;
+             background-color: #eee;
+             padding: 3px 10px;
+             display: inline-block;
+             border-radius: 3px;
+             margin-top: 20px;
+             cursor: pointer;
+             margin-right: 10px;
+        }
+         .link-list {
+             padding: 5px;
+             background-color: #eee;
+             margin: 3px;
+        }
+         .remove-link {
+             float: right;
+             background-color: #8d8d8e;
+             color: #fff;
+             padding: 1px 7px;
+             border-radius: 50%;
+             font-weight: 700;
+             font-size: 14px;
+             cursor: pointer;
+        }
+         .copy-bundle-link {
+             width: 100%;
+             margin-top: 20px;
+             padding: 6px;
+             border: 2px solid #333;
+        }
+         .topic-label {
+             font-size: 30px;
+             font-weight: 700;
+             font-family: "Roboto Mono", monospace;
+             color: #2d2c2c;
+             opacity: 0.8;
+             width: 100%;
+             padding: 20px 0px 10px 10px;
+             letter-spacing: -2px;
+             word-spacing: -12px;
+        }
+         .topic-card {
+             position: relative;
+             height: 160px;
+             margin-bottom: 10px;
+             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+         .topic-image img {
+             vertical-align: middle;
+        }
+         .topic-image {
+             height: 160px;
+             overflow: hidden;
+        }
+         .topic-transparent-layer {
+             position: absolute;
+             width: 100%;
+             height: 160px;
+             border: 1px solid #000;
+             background-color: rgba(0, 0, 0, 0.3);
+             z-index: 1;
+        }
+         .topic-transparent-layer .show-this-layer {
+             color: #fff;
+             display: none;
+        }
+         .show-this-layer a {
+             color: #fff;
+        }
+         .show-this-layer span {
+             background-color: #4d4d4d;
+             padding: 9px 2px 9px 5px;
+             border-radius: 50%;
+             margin: 5px;
+        }
+         .show-this-layer {
+             margin-top: 60px;
+             display: inline-block;
+             text-align: center;
+        }
+         .show-this-layer .icon-class {
+             background-color: rgba(0, 0, 0, 0.5);
+        }
+         .topic-transparent-layer:hover .show-this-layer {
+             display: block;
+        }
+         .topic-card .topic-content {
+             position: absolute;
+             bottom: 0;
+             padding: 10px;
+             width: 100%;
+             background-color: rgba(0, 0, 0, 0.5);
+             font-family: "Roboto Mono", monospace;
+             color: #fff;
+             font-size: 15px;
+             z-index: 9;
+             cursor: pointer;
+        }
+         .topic-content .title {
+             cursor: pointer;
+             font-size: 1.2rem;
+             max-height: 3.2rem;
+             overflow: hidden;
+             font-family: "Questrial", sans-serif;
+        }
+         .pagination {
+             margin: 0px auto;
+             grid-column: 4/2;
+             text-align: center;
+        }
+         .search-box {
+             padding-top: 20px;
+        }
+         .add-leaf-modal {
+             border: 1px solid #eee;
+             border-radius: 10px;
+             max-width: 500px;
+             margin: 0px auto;
+             background-color: #fff;
+             padding: 20px;
+        }
+         .add-leaf-outer {
+             position: fixed;
+             z-index: 99;
+             padding-top: 100px;
+             left: 0;
+             top: 0;
+             width: 100%;
+             height: 100%;
+             overflow: auto;
+             background-color: rgba(0, 0, 0, 0.4);
+        }
+
         `}</style>
       </div>
     );
