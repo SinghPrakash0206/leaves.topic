@@ -203,12 +203,11 @@ class TopicNavbar extends Component {
 					<div className="space-divider"></div>
 				</div>	
 				<style jsx>{`
-.mobile-tags-view {
-
-display: grid;
-grid-gap: 20px;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
+					.mobile-tags-view {
+						display: grid;
+						grid-gap: 20px;
+						grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+					}
 
 					@media only screen and (max-width: 800px) {
 						.nav-links a.search-menu {

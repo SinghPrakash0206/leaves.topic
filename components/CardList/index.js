@@ -58,7 +58,8 @@ class CardList extends React.Component {
       isLoading: false,
       readerSelectArray: [],
       mobileView: false,
-      listOpen: false
+      listOpen: false,
+      isCardClicked: false
     };
   }
 
@@ -212,6 +213,7 @@ class CardList extends React.Component {
   }
 
   addToReader = topic => {
+    this.setState({isCardClicked: true})
     const isMobile = window.innerWidth <= 800;
     const selectArray = this.state.readerSelectArray;
     const activeTabs = this.state.activeTabs;
@@ -272,6 +274,8 @@ class CardList extends React.Component {
       this.setState({ activeRead: topic });
         }
     }
+    this.
+    this.setState({isCardClicked: false})
   };
 
   changeTab = topic => {
@@ -473,7 +477,7 @@ class CardList extends React.Component {
 
         <div className="container">
           <div className="navbar-drawer">
-          {this.state.mobileView ? <Input className="search-tag-input" size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' /> : ''}
+          {!this.state.mobileView ? <Input className="search-tag-input" size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' /> : ''}
             <ul className="ul-list">
               {tagsList.length > 0
                 ? tagsList.map((tag, index) => (
@@ -493,6 +497,7 @@ class CardList extends React.Component {
                   {topicList.map((topic, index) => (
                     <div className="card-list" key={topic.id}>
                       <div className="topic-card">
+                      {this.state.isCardClicked ? <div className="card-clicked"><div className="card-loading">Loading</div></div> : ''}
                         <div className="topic-image" onClick={this.addToReader.bind(null, topic)}>
                           <div className="topic-transparent-layer" style={{backgroundImage: `url(${topic.preview_picture})`, backgroundSize: 'contain'}}>
                             <div className="show-this-layer">
@@ -674,6 +679,24 @@ class CardList extends React.Component {
                  display: none !important;
             }
         }
+
+        .card-clicked {
+          height: 160px;
+          width: 100%;
+          z-index: 99;
+          position: absolute;
+          text-align: center;
+          display: table; 
+        }
+
+        .card-clicked .card-loading {
+          display: table-cell;
+          width: 100%;
+          height: 160px;
+          padding: 10px;
+          vertical-align: middle;
+        }
+
          .leaves-meta {
              padding: 0;
              list-style: none;
