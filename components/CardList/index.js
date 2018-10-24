@@ -134,9 +134,9 @@ class CardList extends React.Component {
     pageNumber++
     var url;
     if(queryTag === "Latest Leaves"){
-      url = process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
+      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
     }else {
-      url = process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
+      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
     }
     console.log(url)
     var combinedArray;
