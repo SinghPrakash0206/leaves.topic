@@ -27,12 +27,12 @@ class LatestTopics extends Component {
 	}
 	const queryTag = 'Latest Leaves'
 	const seoTitle = 'Latest Leaves | Ananr.us - Anant Leaves'
-	const res = await fetch(process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+page_no)
+	const res = await fetch(process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+page_no)
 
 	const data = await res.json();
 
 
-  const tagRes = await fetch(process.env.BASE_URL+ 'api/tags?access_token='+process.env.ACCESS_TOKEN)
+  const tagRes = await fetch(process.env.LEAVES_API_URL + 'api/tags?access_token='+process.env.LEAVES_API_ACCESSTOKEN)
   const tagData = await tagRes.json()
   for (var i = 0; i < tagData.length; i++) {
     tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')

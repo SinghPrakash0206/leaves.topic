@@ -61,7 +61,7 @@ const Leaves = withRouter((props) => (
 
 Leaves.getInitialProps = async function(context){
 	const leave_id = context.query.id;
-	const res = await fetch('http://leaves.anant.us:82/api/entries/'+leave_id+'?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw')
+	const res = await fetch(process.env.LEAVES_API_URL + 'api/entries/'+leave_id+'?access_token=' + process.env.LEAVES_API_ACCESSTOKEN)
 
 	const data = await res.json()
 
