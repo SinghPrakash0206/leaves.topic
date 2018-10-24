@@ -4,7 +4,6 @@ import Link from 'next/link'
 
 const makePaginationHref = (pages, tag, active, type) => {
     let table = []
-    console.log(pages)
     const paginationStyle = {
 		padding: '8px 12px',
 		border: '1px solid rgba(34,36,38,.15)',  

@@ -24,7 +24,6 @@ const Leaves = withRouter((props) => (
 												return <img src={domNode.attribs.src} style={{maxWidth:'100%',display:'block'}}/>
 											}
 											if (domNode.attribs && domNode.name === 'pre') {
-												console.log(domNode)
 												return <Highlight><pre>{domNode.children[0].data}</pre></Highlight>
 											}
 										}

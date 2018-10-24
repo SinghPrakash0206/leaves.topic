@@ -21,7 +21,6 @@ class TopicNavbar extends Component {
 	show = dimmer => () => this.setState({ dimmer, open: true })
 
 	openModalBox = () => {
-		console.log(this.state.isTagBoxOpen)
 		if(this.state.isTagBoxOpen){
 			this.state.isTagBoxOpen = false;
 			this.setState({ modalBoxOpen: true })
@@ -49,7 +48,7 @@ class TopicNavbar extends Component {
 			body_dom.overflow = 'hidden'
 		}
 
-		const response = await axios.get('http://leaves.anant.us:82/api/tags?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw')
+		const response = await axios.get(process.env.LEAVES_API_URL + 'api/tags?access_token='+ process.env.LEAVES_API_ACCESSTOKEN)
 		const data = response.data
 		for (var i = 0; i < data.length; i++) {
 		  	data[i]['tagslug'] = data[i].label.split('.').join('-')
@@ -57,12 +56,10 @@ class TopicNavbar extends Component {
 		}
 
 		this.setState({tagArray: data, frezzArray:data})
-		console.log(data)
 	}
 
 	closeTagBox = () => {
 		let body_dom = document.body.style
-		console.log(body_dom)
 		const condition = this.state.isTagBoxOpen
 		this.setState({isTagBoxOpen: condition ? false : true})
 		if(condition){
@@ -77,9 +74,6 @@ class TopicNavbar extends Component {
 		this.setState({urlToAdd:e.target.value})
 	}
 
-	closeModalBoxAwait = () => {
-		setTimeout(this.setState({ modalBoxOpen: false }), 2000)
-	}
 
 	addLeafToDB = async () => {
 		const url = this.state.urlToAdd
@@ -90,12 +84,14 @@ class TopicNavbar extends Component {
 
 		var xhttp = new XMLHttpRequest();
 
-		xhttp.open("POST", "http://leaves.anant.us:82/api/entries?access_token=N2Y1YmFlNzY4OTM3ZjE2OGMwODExODQ1ZDhiYmQ5OWYzMjhkZjhiMDgzZWU2Y2YyYzNkYzA5MDQ2NWRhNDIxYw", true);
+		xhttp.open("POST", process.env.LEAVES_API_URL + "api/entries?access_token="+process.env.LEAVES_API_ACCESSTOKEN, true);
 		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		await xhttp.send("url="+url); 
-
-		setTimeout(this.closeModalBoxAwait(), 2000)
 		
+
+		 setTimeout(() => { 
+		 	this.setState({ modalBoxOpen: false }) 
+		 }, 3000);
 		// xhttp.onreadystatechange = function() {
 		// console.log(this.status)
 
@@ -109,14 +105,10 @@ class TopicNavbar extends Component {
 
 	searchTag = (e) => {
 		// this.setState({tagArray:this.state.frezzArray})
-		console.log(e.target.value)
 		let list = this.state.frezzArray
 		let val = e.target.value
 		let matches = list.filter(v => v.title.toLowerCase().includes(val));
-		console.log(matches);
 		this.setState({tagArray:matches})
-		console.log(typeof(val))
-		console.log(val.length)
 		if(val.length == 0) {
 			this.setState({tagArray:this.state.frezzArray})
 		}
@@ -134,7 +126,6 @@ class TopicNavbar extends Component {
 	render() {
 		const { activeItem, modalBoxOpen } = this.state
 		let tagListBoxClass = this.state.isTagBoxOpen ? 'open-tag-box' : 'close-tag-box'
-		console.log(tagListBoxClass)
 		return (
 			<div className="topic-navbar">
 
@@ -183,7 +174,7 @@ class TopicNavbar extends Component {
 						</Form>
 					</a>
 					<a className="navbar-links" onClick={this.openModalBox}>Add</a>
-					<a href="#" target="_blank">Login</a>
+					{/*<a href="#" target="_blank">Login</a>*/}
 				</div>
 				</div>
 

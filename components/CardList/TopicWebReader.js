@@ -5,7 +5,6 @@ import Highlight from "react-highlight";
 class TopicWebReader extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.reader)
   }
 
 
@@ -88,13 +87,10 @@ class TopicWebReader extends Component {
   };
 
   moveTabRight = () => {
-    console.log(this.state.activeTabs.length);
-    console.log(this.state.endTabIndex);
     if (
       this.state.endTabIndex > 3 &&
       this.state.endTabIndex + 1 < this.state.activeTabs.length
     ) {
-      console.log("right");
       const { startTabIndex, endTabIndex } = this.state;
       const activeTabs = this.state.activeTabs;
       this.setState({

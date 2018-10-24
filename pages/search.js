@@ -29,7 +29,6 @@ class Search extends React.Component {
 		const res = await fetch('http://stage.leaves.anant.us/solr/select?q='+searchingQuery+'&rows=20&start='+ (page_no-1)*20)
 
 		const data = await res.json();
-		console.log(data.response.numFound)
 
 		var links = data.response.docs
 
@@ -52,7 +51,6 @@ class Search extends React.Component {
   }
 
 	render(){
-		console.log(this.props.linksCunt)
 		return(
 			<div>
 				<TopicNavbar/>				

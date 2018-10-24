@@ -31,7 +31,6 @@ const convertDate = (date) => {
 class CardList extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.data.linksCunt);
     this.state = {
       topicList: this.props.data.list,
       activeTag: this.props.data.tag,
@@ -138,14 +137,12 @@ class CardList extends React.Component {
     }else {
       url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
     }
-    console.log(url)
     var combinedArray;
     axios.get(url)
     .then((response) => {
       // handle success
       var loadMoreArray = response.data._embedded.items
       combinedArray = [...topicList.slice(0, topicList.length), ...loadMoreArray.slice(0, loadMoreArray.length)]
-      console.log(combinedArray);
       this.setState({pageNumber: pageNumber, topicList: combinedArray, isLoading: false})
     })
     .catch(function (error) {
@@ -218,7 +215,6 @@ class CardList extends React.Component {
     const selectArray = this.state.readerSelectArray;
     const activeTabs = this.state.activeTabs;
     const index = activeTabs.findIndex(x => x.id == topic.id);
-    console.log(index);
     if (index < 0) {
       this.setState({ activeTabId: topic.id });
       topic["activeTab"] = true;
@@ -309,13 +305,10 @@ class CardList extends React.Component {
   };
 
   moveTabRight = () => {
-    console.log(this.state.activeTabs.length);
-    console.log(this.state.endTabIndex);
     if (
       this.state.endTabIndex > 3 &&
       this.state.endTabIndex + 1 < this.state.activeTabs.length
     ) {
-      console.log("right");
       const { startTabIndex, endTabIndex } = this.state;
       const activeTabs = this.state.activeTabs;
       this.setState({
@@ -406,7 +399,6 @@ class CardList extends React.Component {
     const topicId = e.target.value
     const activeTabs = this.state.activeTabs
     const index = activeTabs.findIndex(x => x.id == topicId);
-    console.log(index)
     this.setState({activeRead: activeTabs[index]})
   }
 
@@ -477,7 +469,9 @@ class CardList extends React.Component {
 
         <div className="container">
           <div className="navbar-drawer">
-          {!this.state.mobileView ? <Input className="search-tag-input" size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' /> : ''}
+          <div className="search-tag-input">
+            {!this.state.mobileView ? <Input size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' /> : ''}
+          </div>
             <ul className="ul-list">
               {tagsList.length > 0
                 ? tagsList.map((tag, index) => (
@@ -675,8 +669,9 @@ class CardList extends React.Component {
             }
         }
          @media only screen and (max-width: 1100px) {
-             #search-tag-input {
+             .search-tag-input {
                  display: none !important;
+                 border: 1px solid red;
             }
         }
 
@@ -769,7 +764,7 @@ class CardList extends React.Component {
             }
         }
          .height-divider {
-             height: 50px;
+             height: 100px;
         }
          .card-container {
              overflow: hidden;

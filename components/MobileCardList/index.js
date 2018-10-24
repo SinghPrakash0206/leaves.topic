@@ -31,7 +31,6 @@ const convertDate = (date) => {
 class CardList extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.data.linksCunt);
     this.state = {
       topicList: this.props.data.list,
       activeTag: this.props.data.tag,
@@ -129,18 +128,16 @@ class CardList extends React.Component {
     pageNumber++
     var url;
     if(queryTag === "Latest Leaves"){
-      url = process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
+      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
     }else {
-      url = process.env.BASE_URL + 'api/entries?access_token='+process.env.ACCESS_TOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
+      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
     }
-    console.log(url)
     var combinedArray;
     axios.get(url)
     .then((response) => {
       // handle success
       var loadMoreArray = response.data._embedded.items
       combinedArray = [...topicList.slice(0, topicList.length), ...loadMoreArray.slice(0, loadMoreArray.length)]
-      console.log(combinedArray);
       this.setState({pageNumber: pageNumber, topicList: combinedArray, isLoading: false})
     })
     .catch(function (error) {
@@ -211,7 +208,6 @@ class CardList extends React.Component {
     const activeTabs = this.state.activeTabs;
     const selectArray = this.state.readerSelectArray;
     const index = activeTabs.findIndex(x => x.id == topic.id);
-    console.log(index);
     if (index < 0) {
       this.setState({ activeTabId: topic.id });
       topic["activeTab"] = true;
@@ -259,13 +255,10 @@ class CardList extends React.Component {
   };
 
   moveTabRight = () => {
-    console.log(this.state.activeTabs.length);
-    console.log(this.state.endTabIndex);
     if (
       this.state.endTabIndex > 3 &&
       this.state.endTabIndex + 1 < this.state.activeTabs.length
     ) {
-      console.log("right");
       const { startTabIndex, endTabIndex } = this.state;
       const activeTabs = this.state.activeTabs;
       this.setState({
