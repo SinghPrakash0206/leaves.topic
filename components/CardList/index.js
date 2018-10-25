@@ -57,8 +57,7 @@ class CardList extends React.Component {
       isLoading: false,
       readerSelectArray: [],
       mobileView: false,
-      listOpen: false,
-      isCardClicked: false
+      listOpen: false
     };
   }
 
@@ -210,7 +209,6 @@ class CardList extends React.Component {
   }
 
   addToReader = topic => {
-    this.setState({isCardClicked: true})
     const isMobile = window.innerWidth <= 800;
     const selectArray = this.state.readerSelectArray;
     const activeTabs = this.state.activeTabs;
@@ -270,8 +268,6 @@ class CardList extends React.Component {
       this.setState({ activeRead: topic });
         }
     }
-    this.
-    this.setState({isCardClicked: false})
   };
 
   changeTab = topic => {
@@ -491,7 +487,6 @@ class CardList extends React.Component {
                   {topicList.map((topic, index) => (
                     <div className="card-list" key={topic.id}>
                       <div className="topic-card">
-                      {this.state.isCardClicked ? <div className="card-clicked"><div className="card-loading">Loading</div></div> : ''}
                         <div className="topic-image" onClick={this.addToReader.bind(null, topic)}>
                           <div className="topic-transparent-layer" style={{backgroundImage: `url(${topic.preview_picture})`, backgroundSize: 'contain'}}>
                             <div className="show-this-layer">
@@ -737,12 +732,30 @@ class CardList extends React.Component {
          .card-section {
              max-width: 80%;
              margin: 0px auto;
+             background-color: #eee;
         }
          .card-container .cards {
              display: grid;
-             grid-gap: 10px;
+             grid-gap: 20px;
              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+             padding: 10px;
+             background-color: #eeeeee;
         }
+         .card-container .cards .card-list{
+          -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+          box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+          background-color: #fff;
+         }
+         .card-container-reader .cards{
+             padding: 10px;
+             background-color: #eeeeee;
+         }
+         .card-container-reader .cards .card-list{
+          -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+          box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+          background-color: #fff;
+          margin-bottom: 10px;
+         }
          @media only screen and (max-width: 800px) {
              .card-container .cards {
                  display: block;
@@ -963,7 +976,6 @@ class CardList extends React.Component {
              position: relative;
              height: 160px;
              margin-bottom: 10px;
-             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
          .topic-image img {
              vertical-align: middle;
@@ -976,8 +988,6 @@ class CardList extends React.Component {
              position: absolute;
              width: 100%;
              height: 160px;
-             border: 1px solid #000;
-             background-color: rgba(0, 0, 0, 0.3);
              z-index: 1;
         }
          .topic-transparent-layer .show-this-layer {
@@ -1004,17 +1014,9 @@ class CardList extends React.Component {
          .topic-transparent-layer:hover .show-this-layer {
              display: block;
         }
-         .topic-card .topic-content {
-             position: absolute;
-             bottom: 0;
+        .topic-content {
              padding: 10px;
-             width: 100%;
-             background-color: rgba(0, 0, 0, 0.5);
-             font-family: "Roboto Mono", monospace;
-             color: #fff;
-             font-size: 15px;
-             z-index: 9;
-             cursor: pointer;
+
         }
          .topic-content .title {
              cursor: pointer;
