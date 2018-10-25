@@ -14,6 +14,7 @@ const Layout = (props) => (
 		<meta property="og:description" content={ props.description }/>
 		<meta name="twitter:description" content={ props.description }/>
 
+	    <link rel="icon" type="image/x-icon" href="../static/favicon.png" />
 		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Roboto+Mono:400,500|Questrial" rel="stylesheet"/>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"/>
