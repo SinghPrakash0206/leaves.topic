@@ -65,6 +65,13 @@ class CardList extends React.Component {
     this.setState({ hostUrl: window.location.host });
     var ids = localStorage.getItem("linksIds");
     var links = localStorage.getItem("sharingLinks");
+    var activeRead = localStorage.getItem("activeRead");
+    var activeTabId = localStorage.getItem("activeTabId");
+    var activeTabs = localStorage.getItem("activeTabs");
+    var endTabIndex = localStorage.getItem("endTabIndex");
+    var startTabIndex = localStorage.getItem("startTabIndex");
+    var isReaderActive = localStorage.getItem("isReaderActive");
+
     if (ids) {
       this.setState({ linksIdsString: JSON.parse(ids).linksIds });
     }
@@ -73,7 +80,29 @@ class CardList extends React.Component {
       this.setState({ sharingLinks: JSON.parse(links).sharingLinks });
     }
 
-    window.addEventListener("scroll", this.handleScroll);
+    if (activeRead) {
+      this.setState({ activeRead: JSON.parse(activeRead) });
+    }
+
+    if (activeTabId) {
+      this.setState({ activeTabId: parseInt(activeTabId)});
+    }
+
+    if (activeTabs) {
+      this.setState({ activeTabs: JSON.parse(activeTabs) });
+    }
+
+    if (endTabIndex) {
+      this.setState({ endTabIndex: parseInt(endTabIndex)});
+    }
+
+    if (isReaderActive) {
+      this.setState({ isReaderActive: isReaderActive === "false" ? false : true});
+    }
+
+    if (startTabIndex) {
+      this.setState({ startTabIndex: parseInt(startTabIndex)});
+    }
   }
 
   openModalBox = () => {
@@ -94,6 +123,10 @@ class CardList extends React.Component {
     this.setState({ activePage });
     Router.push(`/${this.state.paginationURL}/page/${activePage}`);
   };
+
+  setTheLocalState(name, value){
+    localStorage.setItem(name, value);
+  }
 
   addToBundle(topicData, e) {
     var linksArray = this.state.sharingLinks;
@@ -213,10 +246,15 @@ class CardList extends React.Component {
     const selectArray = this.state.readerSelectArray;
     const activeTabs = this.state.activeTabs;
     const index = activeTabs.findIndex(x => x.id == topic.id);
+    this.setState({ isReaderActive: true });
+    this.setTheLocalState("isReaderActive", true)
     if (index < 0) {
+      this.addToBundle(topic, null)
       this.setState({ activeTabId: topic.id });
+      this.setTheLocalState("activeTabId", topic.id)
       topic["activeTab"] = true;
       this.setState({ activeRead: topic });
+      this.setTheLocalState("activeRead", JSON.stringify(topic))
       activeTabs.push(topic);
       const tabLength = activeTabs.length;
       let { startTabIndex, endTabIndex } = this.state;
@@ -230,7 +268,6 @@ class CardList extends React.Component {
         this.setState({ activeTabs, readerSelectArray: selectArray });
       
       }else{
-        this.setState({ isReaderActive: true });
         if (tabLength > 5) {
         startTabIndex = tabLength - 5;
         endTabIndex = tabLength - 1;
@@ -250,8 +287,11 @@ class CardList extends React.Component {
 
 
       this.setState({ startTabIndex: startTabIndex, endTabIndex: endTabIndex });
+      this.setTheLocalState("startTabIndex", startTabIndex)
+      this.setTheLocalState("endTabIndex", endTabIndex)
 
       this.setState({ activeTabs });
+      this.setTheLocalState("activeTabs", JSON.stringify(activeTabs))
     } else {
         if(isMobile){
     this.setState({mobileView: true})
@@ -341,6 +381,9 @@ class CardList extends React.Component {
         endTabIndex: 0,
         isReaderActive: false
       });
+      this.setTheLocalState("isReaderActive", false)
+      this.setTheLocalState("startTabIndex", 0)
+      this.setTheLocalState("endTabIndex", 0)
     } else if (activeTabs.length > 5) {
       remainTabs = activeTabs
         .slice(0, index)
@@ -357,7 +400,8 @@ class CardList extends React.Component {
         remainTabs[j]["activeTab"] = true;
       }
       this.setState({ startTabIndex, endTabIndex });
-
+      this.setTheLocalState("startTabIndex", startTabIndex)
+      this.setTheLocalState("endTabIndex", endTabIndex)
       activeRead = remainTabs[remainTabs.length - 1];
       activeTabId = remainTabs[remainTabs.length - 1].id;
     } else {
@@ -368,7 +412,12 @@ class CardList extends React.Component {
       activeTabId = remainTabs[remainTabs.length - 1].id;
     }
 
+    this.removeLink(topic.id, null)
     this.setState({ activeTabs: remainTabs, activeTabId, activeRead });
+
+    this.setTheLocalState("activeTabs", JSON.stringify(remainTabs))
+    this.setTheLocalState("activeTabId", activeTabId)
+    this.setTheLocalState("activeRead", JSON.stringify(activeRead))
   };
 
   filterTags = (e) => {
@@ -436,12 +485,12 @@ class CardList extends React.Component {
                 {sharingLinks.map((link, index) => (
                   <div className="link-list" key={link.id} value={link.id}>
                     <div>{link.title}</div>
-                    <span
-                      onClick={this.removeLink.bind(this, link.id)}
+                    <div
+                      onClick={this.closeTab.bind(null, link, index)}
                       className="remove-link"
                     >
-                      x
-                    </span>
+                      <span>x</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -453,10 +502,10 @@ class CardList extends React.Component {
                 <Icon className="icon-class" link name="window close" size="small" />{" "}
                 close
               </div>
-              <div className="share-modal-btn" onClick={this.cleanModalBox.bind(this)} >
-                <Icon className="icon-class" link name="erase" size="small" />{" "}
-                clear
-              </div>
+              {/*<div className="share-modal-btn" onClick={this.cleanModalBox.bind(this)} >
+                              <Icon className="icon-class" link name="erase" size="small" />{" "}
+                              clear
+                            </div>*/}
             </div>
           </div>
         ) : (
@@ -552,6 +601,7 @@ class CardList extends React.Component {
                           );
                         }
                       })}
+                      <div className="shareButton" onClick={this.openModalBox}><Icon className="icon-class" link name="share alternate" size="large" /> {sharingLinks.length}</div>
                       {activeTabs.length > 5 ? (
                         <div className="tab-name">
                           <div className="tab-title" onClick={this.moveTabRight.bind(null)} >
@@ -875,7 +925,7 @@ class CardList extends React.Component {
          .reader .reader-tabs {
              display: grid;
              grid-gap: 0px;
-             grid-template-columns: 30px repeat(5, 1fr) 30px;
+             grid-template-columns: 30px repeat(5, 1fr) 30px 30px;
              cursor: pointer;
         }
          .reader-tabs .tab-name {
@@ -944,9 +994,10 @@ class CardList extends React.Component {
              padding: 5px;
              background-color: #eee;
              margin: 3px;
+             display: grid;
+             grid-template-columns: 90% 10%;
         }
-         .remove-link {
-             float: right;
+         .remove-link span{
              background-color: #8d8d8e;
              color: #fff;
              padding: 1px 7px;

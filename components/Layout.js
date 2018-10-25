@@ -30,7 +30,6 @@ const Layout = (props) => (
 			}
 			.content-inject {
 				height: calc(100vh - 90px);
-				background-color: #eeeeee;
 			}
 		`}</style>
 	</div>
