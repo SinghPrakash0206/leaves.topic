@@ -25,12 +25,23 @@ class Search extends React.Component {
 
 		const activePage = 1
 		const searchingQuery = context.query.search_query
-
-		const res = await fetch('http://stage.leaves.anant.us/solr/select?q='+searchingQuery+'&rows=20&start='+ (page_no-1)*20)
+		const url = 'http://stage.leaves.anant.us/solr/?q='+searchingQuery+'&rows=20&start='+ (page_no-1)*20
+		console.log(url)
+		const res = await fetch(url)
 
 		const data = await res.json();
 
+		const tagRes = await fetch(process.env.LEAVES_API_URL + 'api/tags?access_token='+process.env.LEAVES_API_ACCESSTOKEN)
+		const tagData = await tagRes.json()
+		for (var i = 0; i < tagData.length; i++) {
+			tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')
+			tagData[i]['title'] = tagData[i].label.split('.').join(' ')
+		}
+
+
 		var links = data.response.docs
+
+
 
 		for (var i = 0; i < links.length; i++) {
 			if(links[i].domain_name === "www.youtube.com"){
@@ -46,7 +57,8 @@ class Search extends React.Component {
 		linksCunt: parseInt(data.response.numFound),
 		activePage: parseInt(page_no),
 		queryTag: searchingQuery,
-		type: 'searching'
+		type: 'searching',
+		tagsList: tagData
 	}
   }
 

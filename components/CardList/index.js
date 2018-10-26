@@ -158,7 +158,7 @@ class CardList extends React.Component {
   }
 
   loadMoreLeaves = (e) => {
-    let {pageNumber,queryTag, linksCunt, topicList} = this.state
+    let {pageNumber,queryTag, linksCunt, topicList, type} = this.state
     if(topicList.length < linksCunt){
 
     this.setState({isLoading: true})
@@ -166,15 +166,25 @@ class CardList extends React.Component {
     var url;
     if(queryTag === "Latest Leaves"){
       url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
-    }else {
+    }else if(type === "searching"){
+      url = 'http://stage.leaves.anant.us/solr/?q='+queryTag+'&rows=20&start='+ (pageNumber-1)*20
+    }
+    else {
       url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
     }
     var combinedArray;
     axios.get(url)
     .then((response) => {
+      console.log(response)
       // handle success
-      var loadMoreArray = response.data._embedded.items
-      combinedArray = [...topicList.slice(0, topicList.length), ...loadMoreArray.slice(0, loadMoreArray.length)]
+      
+      var loadMoreArray
+      if(type === "searching") {
+        loadMoreArray = response.data.response.docs
+      }else{        
+        loadMoreArray = response.data._embedded.items
+      }
+        combinedArray = [...topicList.slice(0, topicList.length), ...loadMoreArray.slice(0, loadMoreArray.length)]
       this.setState({pageNumber: pageNumber, topicList: combinedArray, isLoading: false})
     })
     .catch(function (error) {
@@ -518,7 +528,7 @@ class CardList extends React.Component {
             {!this.state.mobileView ? <Input size='small' id="search-tag-input" style={{padding: 15, position: 'fixed'}} onChange={this.filterTags.bind(this)} focus placeholder='Search Your Tag' /> : ''}
           </div>
             <ul className="ul-list">
-              {tagsList.length > 0
+              {tagsList
                 ? tagsList.map((tag, index) => (
                     <li key={index}>
                       <Link href={`/topic/${tag.tagslug}`}>
@@ -572,6 +582,7 @@ class CardList extends React.Component {
                 }
                 </div>
                   : ''}
+                  {/*<div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag} type={type}/></div>*/}
                 <div className="height-divider"></div>
                 </div>
                 <div className={ this.state.isReaderActive ? "reader reader-block" : "reader" } >
@@ -795,6 +806,7 @@ class CardList extends React.Component {
           -webkit-box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
           box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
           background-color: #fff;
+          max-height: 280px;
          }
          .card-container-reader .cards{
              padding: 10px;
@@ -805,6 +817,7 @@ class CardList extends React.Component {
           box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
           background-color: #fff;
           margin-bottom: 10px;
+          max-height: 280px;
          }
          @media only screen and (max-width: 800px) {
              .card-container .cards {
