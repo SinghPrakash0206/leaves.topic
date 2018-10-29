@@ -25,6 +25,9 @@ class TopicNavbar extends Component {
 			this.state.isTagBoxOpen = false;
 			this.setState({ modalBoxOpen: true })
 		}
+		var checkbox = document.getElementById('nav-check');
+		console.log(checkbox.checked)
+		checkbox.checked ? (checkbox.checked = false) : (checkbox.checked = true)
 		this.setState({ modalBoxOpen: true })
 	}
 
@@ -314,7 +317,6 @@ class TopicNavbar extends Component {
 
 					.navbar-links {
 						cursor: pointer;
-						font-size: 20px;
 					}
 
 					.navbar-links a{

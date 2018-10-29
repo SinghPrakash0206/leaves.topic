@@ -252,7 +252,7 @@ class CardList extends React.Component {
   }
 
   addToReader = topic => {
-    const isMobile = window.innerWidth <= 800;
+    const isMobile = window.innerWidth <= 812;
     const selectArray = this.state.readerSelectArray;
     const activeTabs = this.state.activeTabs;
     const index = activeTabs.findIndex(x => x.id == topic.id);
@@ -269,6 +269,8 @@ class CardList extends React.Component {
       const tabLength = activeTabs.length;
       let { startTabIndex, endTabIndex } = this.state;
       if(isMobile){
+        this.setState({ isReaderActive: false });
+        this.setTheLocalState("isReaderActive", false)
         this.setState({mobileView: true})
         selectArray.push({ key: topic.id, value: topic.id, text: topic.title })
         for (var i = 0; i < activeTabs.length - 1; i++) {
@@ -478,15 +480,6 @@ class CardList extends React.Component {
     const { activeTabs } = this.state;
     return (
       <div>
-        {sharingLinks.length > 0 ? (
-          <div className="share-icon" onClick={this.openModalBox}>
-            <div className="sharing-link-count">{sharingLinks.length}</div>
-            <Icon className="icon-class" link name="share alternate" size="large" />
-          </div>
-        ) : (
-          ""
-        )}
-
         {modalBoxOpen ? (
           <div className="add-leaf-outer" onClick={this.clickOutModalBox.bind(this)} id="outer" >
             <div className="add-leaf-modal">
@@ -547,7 +540,7 @@ class CardList extends React.Component {
                     <div className="card-list" key={topic.id}>
                       <div className="topic-card">
                         <div className="topic-image" onClick={this.addToReader.bind(null, topic)}>
-                          <div className="topic-transparent-layer" style={{backgroundImage: `url(${topic.preview_picture})`, backgroundSize: 'contain'}}>
+                          <div className="topic-transparent-layer" style={{backgroundImage: `url(${topic.preview_picture})`, backgroundSize: 'cover',backgroundRepeat: 'no-repeat'}}>
                             <div className="show-this-layer">
                               <span>
                                 <Popup trigger={ <Icon onClick={this.addToBundle.bind( this, topic )} value={topic.url} className="icon-class" link name="pin" size="large" /> } content="Add to bundle & share" />
@@ -820,14 +813,15 @@ class CardList extends React.Component {
           margin-bottom: 10px;
           max-height: 280px;
          }
-         @media only screen and (max-width: 800px) {
+         @media only screen and (max-width: 768px) {
              .card-container .cards {
                  display: block;
             }
              .card-container .cards .card-list {
-                 width: 50%;
-                 display: inline-block;
-                 padding: 10px;
+             display: grid;
+             grid-gap: 10px;
+             grid-template-columns: 50% 50%;
+             padding: 10px;
             }
         }
          @media only screen and (max-width: 500px) {
@@ -851,7 +845,7 @@ class CardList extends React.Component {
              grid-template-columns: 25% 75%;
              overflow: hidden;
         }
-         @media only screen and (max-width: 800px) {
+         @media only screen and (max-width: 768px) {
              .card-container-reader .reader{
                  position: absolute;
                  top: 0;
@@ -874,10 +868,10 @@ class CardList extends React.Component {
              display: none;
              margin: 0px 10px;
              position: relative;
-             background-color: #fff;
+             padding-left: 20px;
         }
 
-        @media only screen and (min-width: 1100px) {
+        @media only screen and (min-width: 800px) {
           .mini-reader {
             display: none;
           }
@@ -930,6 +924,7 @@ class CardList extends React.Component {
              display: block;
         }
          .reader-inner {
+             background-color: #fff;
         }
          .reader-inner-fixed {
              position: fixed;
