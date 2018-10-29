@@ -314,6 +314,11 @@ class TopicNavbar extends Component {
 
 					.navbar-links {
 						cursor: pointer;
+						font-size: 20px;
+					}
+
+					.navbar-links a{
+						padding: 20px;
 					}
 
 					.add-leaf-modal {
@@ -371,13 +376,15 @@ class TopicNavbar extends Component {
 							height: 0px;
 							transition: all 0.3s ease-in;
 							overflow-y: hidden;
-							top: 60px;
+							top: 70px;
 							left: 0px;
 							z-index: 999;
 						}
 						.nav > .nav-links > a {
 							display: block;
 							width: 100%;
+							padding: 20px;
+							border: 1px solid #707070;
 						}
 						.nav > #nav-check:not(:checked) + .nav-links {
 							height: 0px;

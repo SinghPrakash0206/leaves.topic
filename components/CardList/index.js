@@ -807,6 +807,7 @@ class CardList extends React.Component {
           box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
           background-color: #fff;
           max-height: 280px;
+          margin-bottom: 10px;
          }
          .card-container-reader .cards{
              padding: 10px;
@@ -1085,7 +1086,7 @@ class CardList extends React.Component {
          .topic-content .title {
              cursor: pointer;
              font-size: 1.2rem;
-             max-height: 3.2rem;
+             max-height: 2.8rem;
              overflow: hidden;
              font-family: "Questrial", sans-serif;
         }
