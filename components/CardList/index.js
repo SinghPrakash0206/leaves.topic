@@ -68,8 +68,8 @@ class CardList extends React.Component {
     var activeRead = localStorage.getItem("activeRead");
     var activeTabId = localStorage.getItem("activeTabId");
     var activeTabs = localStorage.getItem("activeTabs");
-    var endTabIndex = localStorage.getItem("endTabIndex");
-    var startTabIndex = localStorage.getItem("startTabIndex");
+    var endTabIndex = parseInt(localStorage.getItem("endTabIndex"));
+    var startTabIndex = parseInt(localStorage.getItem("startTabIndex"));
     var isReaderActive = localStorage.getItem("isReaderActive");
 
     if (ids) {
