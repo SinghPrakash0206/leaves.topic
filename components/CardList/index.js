@@ -624,20 +624,21 @@ class CardList extends React.Component {
                     <div className="reader-content">
                       {activeRead == null
                         ? ""
-                        : Parser(activeRead.content, {
+                        : Parser(activeRead.content.trim(), {
                             replace: function(domNode) {
                               if (domNode.attribs && domNode.name === "img") {
                                 return (
                                   <img src={domNode.attribs.src} style={{ maxWidth: "100%", display: "block" }} />
                                 );
                               }
-                              if (domNode.attribs && domNode.name === "pre") {
-                                return (
-                                  <Highlight>
-                                    <pre>{domNode.children[0].data}</pre>
-                                  </Highlight>
-                                );
-                              }
+                              // if (domNode.attribs && domNode.name === "pre") {
+                              //   console.log(domNode.children[0])
+                              //   return (
+                              //     <Highlight>
+                              //       <pre>{domNode.children[0].data === undefined ? '' : domNode.children[0].data}</pre>
+                              //     </Highlight>
+                              //   );
+                              // }
                             }
                           })}
 
@@ -648,7 +649,7 @@ class CardList extends React.Component {
               </div>
             </div>
           </div>
-          {activeTabs.length > 0 ? 
+          {activeTabs.length > 0 && this.state.mobileView ? 
           <div className={ this.state.mobileView ? "mobile-reader" : "mini-reader" } >
                   <div className="reader-inner" >
                   <div className="mobile-reader-head">
@@ -673,13 +674,13 @@ class CardList extends React.Component {
                                   <img src={domNode.attribs.src} style={{ maxWidth: "100%", height: "auto", display: "block" }} />
                                 );
                               }
-                              if (domNode.attribs && domNode.name === "pre") {
-                                return (
-                                  <Highlight>
-                                    <pre>{domNode.children[0].data}</pre>
-                                  </Highlight>
-                                );
-                              }
+                              // if (domNode.attribs && domNode.name === "pre") {
+                              //   return (
+                              //     <Highlight>
+                              //       <pre>{domNode.children[0].data}</pre>
+                              //     </Highlight>
+                              //   );
+                              // }
                             }
                           })}
 
