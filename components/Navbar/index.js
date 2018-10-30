@@ -123,7 +123,7 @@ class TopicNavbar extends Component {
 
 	searchThisQuery(e){
 		e.preventDefault()
-		Router.push(`/search/${this.state.searchQuery}`)
+		Router.push(`/search-query/${this.state.searchQuery}`)
 	}
 
 	render() {

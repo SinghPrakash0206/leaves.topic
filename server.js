@@ -41,15 +41,15 @@ app.prepare()
         app.render(req, res, actualPage, queryParams)
     })
 
-    server.get('/search/:search_query', (req, res) => {
+    server.get('/search-query/:search_query', (req, res) => {
 
-        const actualPage = '/search'
+        const actualPage = '/search-query'
         const queryParams = { search_query: req.params.search_query } 
         app.render(req, res, actualPage, queryParams)
     })
 
-    server.get('/search/:search_query/page/:page_no', (req, res) => {
-        const actualPage = '/search'
+    server.get('/search-query/:search_query/page/:page_no', (req, res) => {
+        const actualPage = '/search-query'
         const queryParams = { search_query: req.params.search_query, page_no: req.params.page_no } 
         app.render(req, res, actualPage, queryParams)
     })
