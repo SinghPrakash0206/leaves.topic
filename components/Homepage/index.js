@@ -50,7 +50,7 @@ class Homepage extends React.Component {
 			<div className="home-container">
 				<div className="home-label"><i className="fa fa-leaf"></i>Leaves</div>
 				<div className="home-search-input">
-					<Search loading={isLoading} size="huge" onResultSelect={this.handleResultSelect} onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })} placeholder="search a tag" results={results} value={value} {...this.props} />
+					<Search loading={isLoading} selectFirstResult="true" size="huge" onResultSelect={this.handleResultSelect} onSearchChange={_.debounce(this.handleSearchChange, 500, { leading: true })} placeholder="search a tag" results={results} value={value} {...this.props} />
 				</div>
 				<div className="search-example">Ex: "node", "big data", "business", "artificial intelligence", "kubernetes", "docker" etc</div>	
 				<Link href="/latest-leaves"><a>view all latest leaves</a></Link>
