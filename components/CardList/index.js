@@ -532,6 +532,7 @@ class CardList extends React.Component {
                 : ""}
             </ul>
           </div>
+          <div className="search-card-msg">{this.props.data.type === 'searching' ? this.props.data.linksCunt + ' Results found : ' + this.props.data.queryTag : ''}</div>
           <div className="content-section">
             <div className="card-content">
               <div className={this.state.isReaderActive ? "card-container-reader" : "card-container" }>
@@ -1112,6 +1113,10 @@ class CardList extends React.Component {
              height: 100%;
              overflow: auto;
              background-color: rgba(0, 0, 0, 0.4);
+        }
+        .search-card-msg {
+          height: 30px;
+          font-size: 16
         }
 
         `}</style>

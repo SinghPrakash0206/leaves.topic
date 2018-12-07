@@ -118,12 +118,15 @@ class TopicNavbar extends Component {
 	}
 
 	makeSearch(e){
-		this.setState({searchQuery: e.target.value})
+		this.setState({searchQuery: e.target.value.trim()})
 	}
 
 	searchThisQuery(e){
 		e.preventDefault()
-		Router.push(`/search-query/${this.state.searchQuery}`)
+		let query = this.state.searchQuery
+		if(query !== null && query.trim().length > 0){
+			Router.push(`/search-query/${this.state.searchQuery}`)
+		}
 	}
 
 	render() {
