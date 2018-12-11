@@ -623,6 +623,17 @@ class CardList extends React.Component {
                                             </div>*/}
                     </div>
                     <div className="reader-content">
+                    {activeRead == null ? "" :
+                    <div className="content-meta">
+                      <h2>{activeRead.title}</h2>
+                      <small>{activeRead.domain_name}</small>
+                      <ul>
+                        <li><Icon name="user"/> {activeRead.user_name}</li>
+                        <li><Icon name="linkify"/> <a href={activeRead.url}>link</a></li>
+                        <li><Icon name="calendar alternate"/> {convertDate(activeRead.created_at)}</li>
+                      </ul>
+                    </div>
+                    }
                       {activeRead == null
                         ? ""
                         : Parser(activeRead.content.trim(), {
@@ -642,6 +653,7 @@ class CardList extends React.Component {
                               // }
                             }
                           })}
+                    }
 
            				<div className="height-divider"></div>
                     </div>
@@ -666,6 +678,17 @@ class CardList extends React.Component {
                   
 
                     <div className="reader-content">
+                    {activeRead == null ? "" :
+                    <div className="content-meta">
+                      <h2>{activeRead.title}</h2>
+                      <small>{activeRead.domain_name}</small>
+                      <ul>
+                        <li><Icon name="user"/> {activeRead.user_name}</li>
+                        <li><Icon name="linkify"/> <a href={activeRead.url}>link</a></li>
+                        <li><Icon name="calendar alternate"/> {convertDate(activeRead.created_at)}</li>
+                      </ul>
+                    </div>
+                    }
                       {activeRead == null
                         ? ""
                         : Parser(activeRead.content, {
@@ -724,6 +747,21 @@ class CardList extends React.Component {
                  display: none !important;
                  border: 1px solid red;
             }
+        }
+
+        .content-meta h2{
+          padding:0;
+          margin: 0;
+        }
+
+        .content-meta ul {
+          padding: 0;
+          margin: 0px 0px 20px 0px;
+        }
+
+        .content-meta ul li {
+          display: inline-block;
+          padding:3px 10px 3px 0px;
         }
 
         .card-clicked {
@@ -875,6 +913,9 @@ class CardList extends React.Component {
 
         @media only screen and (min-width: 800px) {
           .mini-reader {
+            display: none;
+          }
+          .reader {
             display: none;
           }
         }

@@ -157,6 +157,7 @@ class TopicWebReader extends Component {
                       </div>
                     </div>
                     <div className="reader-content">
+                      dcjdnsj
                       {activeRead == null
                         ? ""
                         : Parser(activeRead.content, {
@@ -226,6 +227,7 @@ class TopicWebReader extends Component {
             font-family: "Questrial", sans-serif;
             display: grid;
             grid-template-columns: 80% 20%;
+            line-height: 2rem;
           }
 
           .reader-tabs .tab-name .tab-title {
