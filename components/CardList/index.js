@@ -57,11 +57,19 @@ class CardList extends React.Component {
       isLoading: false,
       readerSelectArray: [],
       mobileView: false,
-      listOpen: false
+      listOpen: false,
+      readerMinimize: false
     };
   }
 
   componentDidMount() {
+
+    const isMobile = window.innerWidth <= 812;
+
+    if(isMobile) {
+    	this.setState({mobileView: true})
+    }
+
     this.setState({ hostUrl: window.location.host });
     var ids = localStorage.getItem("linksIds");
     var links = localStorage.getItem("sharingLinks");
@@ -258,6 +266,7 @@ class CardList extends React.Component {
     const index = activeTabs.findIndex(x => x.id == topic.id);
     this.setState({ isReaderActive: true });
     this.setTheLocalState("isReaderActive", true)
+    this.setState({readerMinimize: true })
     if (index < 0) {
       this.addToBundle(topic, null)
       this.setState({ activeTabId: topic.id });
@@ -449,7 +458,7 @@ class CardList extends React.Component {
   }
 
   miniMobile = () => {
-    this.setState({mobileView: this.state.mobileView ? false : true})
+    this.setState({readerMinimize: this.state.readerMinimize ? false : true})
   }
 
   selectReaderTab = (e) => {
@@ -535,9 +544,10 @@ class CardList extends React.Component {
           {this.props.data.type === 'searching' ? <div className="search-card-msg"> {this.props.data.linksCunt + ' Results found : ' + this.props.data.queryTag}</div> : ''}
           <div className="content-section">
             <div className="card-content">
-              <div className={this.state.isReaderActive ? "card-container-reader" : "card-container" }>
+              <div className={this.state.isReaderActive & !this.state.mobileView ? "card-container-reader" : "card-container" }>
                 <div className="cards" style={{ height: "calc(100vh - 74px)", "overflowY": "scroll" }} >
-                  {topicList.map((topic, index) => (
+                  {topicList.map((topic, index) => {
+                  	return topic.url !== "" ?
                     <div className="card-list" key={topic.id}>
                       <div className="topic-card">
                         <div className="topic-image" onClick={this.addToReader.bind(null, topic)}>
@@ -564,7 +574,7 @@ class CardList extends React.Component {
                           </ul>                       
                         </div>
                     </div>
-                  ))}
+                  : ''})}
                 <div className="height-divider"></div>
                   {activePage > 0 && linksCunt > topicList.length
                     ?
@@ -579,7 +589,7 @@ class CardList extends React.Component {
                   {/*<div className="pagination" ><TopicPagination defaultActivePage={activePage} totalPages={pageCount} tag={queryTag} type={type}/></div>*/}
                 <div className="height-divider"></div>
                 </div>
-                <div className={ this.state.isReaderActive ? "reader reader-block" : "reader" } >
+                <div className={ this.state.isReaderActive & !this.state.mobileView ? "reader reader-block" : "reader" } >
                   <div className="reader-inner" >
                     <div className="reader-tabs">                      
                       {activeTabs.length > 5 ? (
@@ -643,14 +653,14 @@ class CardList extends React.Component {
                                   <img src={domNode.attribs.src} style={{ maxWidth: "100%", display: "block" }} />
                                 );
                               }
-                              // if (domNode.attribs && domNode.name === "pre") {
-                              //   console.log(domNode.children[0])
-                              //   return (
-                              //     <Highlight>
-                              //       <pre>{domNode.children[0].data === undefined ? '' : domNode.children[0].data}</pre>
-                              //     </Highlight>
-                              //   );
-                              // }
+                              if (domNode.attribs && domNode.name === "pre") {
+                                console.log(domNode.children[0])
+                                return (
+                                  <Highlight>
+                                    <pre>{domNode.children[0].data === undefined ? '' : domNode.children[0].data}</pre>
+                                  </Highlight>
+                                );
+                              }
                             }
                           })}
                     }
@@ -663,7 +673,7 @@ class CardList extends React.Component {
             </div>
           </div>
           {activeTabs.length > 0 && this.state.mobileView ? 
-          <div className={ this.state.mobileView ? "mobile-reader" : "mini-reader" } >
+          <div className={ this.state.readerMinimize ? "mobile-reader" : "mini-reader" } >
                   <div className="reader-inner" >
                   <div className="mobile-reader-head">
                   <div className="mobile-reader-tabs">
@@ -673,7 +683,7 @@ class CardList extends React.Component {
                   )): ''}
                   </select>
                   </div>
-                  <div className="head-icons">{this.state.mobileView ? <Icon name="window minimize" onClick={this.miniMobile.bind(this)}/> : <Icon name="window maximize outline" onClick={this.miniMobile.bind(this)}/>}</div>
+                  <div className="head-icons">{this.state.readerMinimize ? <Icon name="window minimize" onClick={this.miniMobile.bind(this)}/> : <Icon name="window maximize outline" onClick={this.miniMobile.bind(this)}/>}</div>
                   </div>
                   
 
@@ -895,8 +905,6 @@ class CardList extends React.Component {
              .reader-content {
                  height: 100vh !important;
             }
-             .reader-is-minimized {
-            }
         }
          .card-container-reader .cards {
              margin-right: -27px !important;
@@ -909,15 +917,6 @@ class CardList extends React.Component {
              margin: 0px 10px;
              position: relative;
              padding-left: 20px;
-        }
-
-        @media only screen and (min-width: 800px) {
-          .mini-reader {
-            display: none;
-          }
-          .reader {
-            display: none;
-          }
         }
          .mini-reader {
              position: fixed;

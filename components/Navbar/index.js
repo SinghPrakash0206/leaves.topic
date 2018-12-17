@@ -129,6 +129,10 @@ class TopicNavbar extends Component {
 		}
 	}
 
+	handleClick(e){
+		console.log('select')		
+	}
+
 	render() {
 		const { activeItem, modalBoxOpen } = this.state
 		let tagListBoxClass = this.state.isTagBoxOpen ? 'open-tag-box' : 'close-tag-box'
@@ -141,7 +145,7 @@ class TopicNavbar extends Component {
 						<Form >
 							<Form.Field>
 							<label>URL</label>
-								<input type="url" onChange={this.setURLToState.bind(this)} placeholder='Paste the URL' />
+								<input type="url" onClick={this.handleClick.bind(this)} onChange={this.setURLToState.bind(this)} placeholder='Paste the URL' />
 							</Form.Field>
 							<Button type='submit' onClick={this.addLeafToDB}>Add</Button>
 							<Button type='submit' onClick={this.closeModalBox}>Close</Button>
@@ -208,7 +212,11 @@ class TopicNavbar extends Component {
 
 					@media only screen and (max-width: 800px) {
 						.nav-links a.search-menu {
-							display: none !important;
+							position: fixed;
+							top: 0;
+							border: none !important;
+							width: 50% !important;
+							right: 38px;
 						}		
 					}
 
@@ -240,6 +248,10 @@ class TopicNavbar extends Component {
 						padding: 10px 10px 10px 10px;
 						font-weight: 700;
 						cursor: pointer;
+					}
+
+					.nav .nav-btn {
+						margin-top: 6px !important;
 					}
 
 					.hamburgur {
