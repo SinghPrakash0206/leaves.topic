@@ -44,7 +44,7 @@ export default class MyApp extends App {
     const {Component, pageProps} = this.props
     return (
       <Container>
-          {this.state.progress ? <div style={{position: 'absolute', height: '100vh', width: '100%', 'backgroundColor': 'rgba(0,0,0,0.5)', 'zIndex': 999, top: 0, fontFamily: '"Questrial", sans-serif', fontSize: 24, textAlign: 'center', padding: 40, color: '#fff'}}>loading...</div> : ''}
+          {this.state.progress ? <div style={{position: 'absolute', height: '100vh', width: '100%', 'backgroundColor': 'rgba(0,0,0,0.5)', 'zIndex': 99999, top: 0, fontFamily: '"Questrial", sans-serif', fontSize: 24, textAlign: 'center', padding: 40, color: '#fff'}}>loading...</div> : ''}
 
         <Component {...pageProps} />
       </Container>

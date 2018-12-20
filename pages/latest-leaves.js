@@ -35,7 +35,7 @@ class LatestTopics extends Component {
   const tagRes = await fetch(process.env.LEAVES_API_URL + 'api/tags?access_token='+process.env.LEAVES_API_ACCESSTOKEN)
   const tagData = await tagRes.json()
   for (var i = 0; i < tagData.length; i++) {
-    tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')
+    tagData[i]['tagslug'] = encodeURI(tagData[i].label.split('.').join('-'))
     tagData[i]['title'] = tagData[i].label.split('.').join(' ')
   }
 
@@ -58,7 +58,7 @@ class LatestTopics extends Component {
 		queryURL: 'topic'+queryTag,
 		paginationURL: 'latest-leaves',
 		type: 'latest-leaves',
-    	tagsList: tagData
+  	tagsList: tagData
 	}
   }
 
@@ -66,7 +66,7 @@ class LatestTopics extends Component {
   render(props) {
     return (
      <div>
-		<TopicNavbar/>
+		<TopicNavbar {...this.props}/>
 		<Layout title={this.props.seoTitle} description={this.props.seoDesc}>
 			<CardList data={this.props}/>
 		</Layout>

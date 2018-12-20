@@ -62,6 +62,13 @@ class CardList extends React.Component {
     };
   }
 
+  sortTagList(a) {
+    a.sort(function(x, y) {
+        return (x.active === y.active)? 0 : x.active ? -1 : 1;
+    });
+    return a
+  }
+
   componentDidMount() {
 
     const isMobile = window.innerWidth <= 812;
@@ -70,7 +77,23 @@ class CardList extends React.Component {
     	this.setState({mobileView: true})
     }
 
-    this.setState({ hostUrl: window.location.host });
+    const activeTagValue = this.state.activeTag
+    const tagsListArray = this.state.tagsList
+
+    if(activeTagValue !== "Latest Leaves" ){
+      var value = activeTagValue.split(',')
+      for (var i = 0; i < tagsListArray.length; i++) {
+        if(value.includes(tagsListArray[i].tagslug)){
+          tagsListArray[i].active = true
+        }else{
+          tagsListArray[i].active = false
+        }
+      }
+    }
+
+    const sortedTagList = this.sortTagList(tagsListArray)
+
+    this.setState({ hostUrl: window.location.host, tagsList:sortedTagList });
     var ids = localStorage.getItem("linksIds");
     var links = localStorage.getItem("sharingLinks");
     var activeRead = localStorage.getItem("activeRead");
@@ -468,6 +491,15 @@ class CardList extends React.Component {
     this.setState({activeRead: activeTabs[index]})
   }
 
+  removeActiveTag = (tags, tag) => {
+    var tagArr = tags.split(',')
+    var index = tagArr.indexOf(tag)
+    if(index > -1){
+      tagArr.splice(index, 1);
+    }
+    return tagArr.join(',')
+  }
+
   render(props) {
     const {
       topicList,
@@ -533,8 +565,8 @@ class CardList extends React.Component {
               {tagsList
                 ? tagsList.map((tag, index) => (
                     <li key={index}>
-                      <Link href={`/topic/${tag.tagslug}`}>
-                        <a>{tag.label}</a>
+                      <Link href={activeTag === tag.tagslug ? '/latest-leaves' : `/topic/${activeTag !== "Latest Leaves" ? (!activeTag.includes(tag.tagslug) ? activeTag+','+tag.tagslug : this.removeActiveTag(activeTag, tag.tagslug)) : tag.tagslug}`}>
+                        <a className={tag.active ? 'tag-active' : ''}>{tag.label}</a>
                       </Link>
                     </li>
                   ))
@@ -708,13 +740,18 @@ class CardList extends React.Component {
                                   <img src={domNode.attribs.src} style={{ maxWidth: "100%", height: "auto", display: "block" }} />
                                 );
                               }
-                              // if (domNode.attribs && domNode.name === "pre") {
-                              //   return (
-                              //     <Highlight>
-                              //       <pre>{domNode.children[0].data}</pre>
-                              //     </Highlight>
-                              //   );
-                              // }
+                              if (domNode.attribs && domNode.name === "pre") {
+                                return (
+                                  <Highlight>
+                                    <pre>{domNode.children[0].data}</pre>
+                                  </Highlight>
+                                );
+                              }
+                              if (domNode.attribs && domNode.name === "iframe") {
+                                return (
+                                   <iframe id={domNode.attribs.id} src={domNode.attribs.src} allowfullscreen="" width="100%" height="auto" frameborder="0">[embedded content]</iframe>
+                                );
+                              }
                             }
                           })}
 
@@ -811,6 +848,14 @@ class CardList extends React.Component {
              overflow-x: hidden;
              margin-top: 60px;
         }
+
+        .ul-list .tag-active:after {
+          content: "✓";
+          height: 5px;
+          width: 5px;
+          color: green;
+        }
+
          .ul-list:hover {
              margin-right: 0px !important;
         }
@@ -904,6 +949,7 @@ class CardList extends React.Component {
             }
              .reader-content {
                  height: 100vh !important;
+                 overflow-x: hidden;
             }
         }
          .card-container-reader .cards {

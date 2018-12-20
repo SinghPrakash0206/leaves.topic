@@ -18,6 +18,10 @@ class TopicNavbar extends Component {
 		searchQuery: null
 	}
 
+	componentDidMount() {
+		this.setState({tagArray: this.props.tagsList})
+	}
+
 	show = dimmer => () => this.setState({ dimmer, open: true })
 
 	openModalBox = () => {
@@ -54,7 +58,7 @@ class TopicNavbar extends Component {
 		const response = await axios.get(process.env.LEAVES_API_URL + 'api/tags?access_token='+ process.env.LEAVES_API_ACCESSTOKEN)
 		const data = response.data
 		for (var i = 0; i < data.length; i++) {
-		  	data[i]['tagslug'] = data[i].label.split('.').join('-')
+		  	data[i]['tagslug'] = encodeURI(data[i].label.split('.').join('-'))
 		  	data[i]['title'] = data[i].label.split('.').join(' ')
 		}
 
@@ -95,15 +99,6 @@ class TopicNavbar extends Component {
 		 setTimeout(() => { 
 		 	this.setState({ modalBoxOpen: false }) 
 		 }, 3000);
-		// xhttp.onreadystatechange = function() {
-		// console.log(this.status)
-
-		// this.closeMod();
-			
-		// // if (this.readyState == 4 && this.status == 200) {
-		 
-		// // }
-		// };
 	}
 
 	searchTag = (e) => {

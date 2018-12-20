@@ -10,16 +10,16 @@ app.prepare()
 .then(() => {
     const server = express()
 
-    server.get('/topic/:tag', (req, res) => {
+    server.get('/topic/:tags', (req, res) => {
 
         const actualPage = '/topic'
-        const queryParams = { tag: req.params.tag } 
+        const queryParams = { tags: req.params.tags } 
         app.render(req, res, actualPage, queryParams)
     })
 
-    server.get('/topic/:tag/page/:page_no', (req, res) => {
+    server.get('/topic/:tags/page/:page_no', (req, res) => {
         const actualPage = '/topic'
-        const queryParams = { tag: req.params.tag, page_no: req.params.page_no } 
+        const queryParams = { tags: req.params.tags, page_no: req.params.page_no } 
         app.render(req, res, actualPage, queryParams)
     })
 

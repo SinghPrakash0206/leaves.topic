@@ -4,7 +4,18 @@ import CardList from '../components/CardList/'
 import TopicNavbar from '../components/Navbar/'
 import Link from 'next/link'
 import React, { Component } from 'react'
+import axios from "axios";
 
+
+
+const getTopics = async (page_no, queryTag) => {
+    try {
+    const response = await axios.get(process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+page_no+'&sort=created&tags=' + queryTag);
+    return response.data
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 class Topic extends Component {
 
@@ -22,21 +33,29 @@ class Topic extends Component {
   }else{
     page_no = context.query.page_no
   }
-  const queryTag = context.query.tag.split('-').join('.')
-  const seoTitle = context.query.tag.split('-').join(' ').replace(/\b\w/g, l => l.toUpperCase())
-  const res = await fetch(process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+page_no+'&sort=created&tags=' + queryTag)
 
-  const data = await res.json();
+  const seoTitle = context.query.tags.split('-').join(' ').replace(/\b\w/g, l => l.toUpperCase())
+  console.log(context.query.tags)
+
+  var multiTags = context.query.tags.split(',')
+
+  const queryTag = context.query.tags.split('-').join('.')
+  var data = []
+
+  for (var i = 0; i < multiTags.length; i++) {
+    const dataRes = await getTopics(page_no, multiTags[i])
+    data = [...data, ...dataRes._embedded.items]
+  }
 
 
   const tagRes = await fetch(process.env.LEAVES_API_URL + 'api/tags?access_token='+process.env.LEAVES_API_ACCESSTOKEN)
   const tagData = await tagRes.json()
   for (var i = 0; i < tagData.length; i++) {
-    tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')
+    tagData[i]['tagslug'] = encodeURI(tagData[i].label.split('.').join('-'))
     tagData[i]['title'] = tagData[i].label.split('.').join(' ')
   }
 
-  var links = data._embedded.items
+  var links = data
 
   for (var i = 0; i < links.length; i++) {
     if(links[i].domain_name === "www.youtube.com"){
@@ -46,13 +65,13 @@ class Topic extends Component {
 
   return {
     list: links,
-    tag: context.query.tag,
+    tag: context.query.tags,
     seoTitle: seoTitle,
     seoDesc: 'Resources list of the '+seoTitle,
     linksCunt: data.total,
     activePage: data.page,
     queryTag: queryTag,
-    paginationURL: 'topic/'+context.query.tag,
+    paginationURL: 'topic/'+context.query.tags,
     type: 'topic',
     tagsList: tagData
   }
@@ -62,7 +81,7 @@ class Topic extends Component {
   render(props) {
     return (
      <div>
-    <TopicNavbar />
+    <TopicNavbar {...this.props}/>
     <Layout title={this.props.seoTitle} description={this.props.seoDesc}>
       <CardList data={this.props} />
     </Layout>
