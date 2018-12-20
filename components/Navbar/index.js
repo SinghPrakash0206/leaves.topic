@@ -128,8 +128,18 @@ class TopicNavbar extends Component {
 		console.log('select')		
 	}
 
+	removeActiveTag = (tags, tag) => {
+	    var tagArr = tags.split(',')
+	    var index = tagArr.indexOf(tag)
+	    if(index > -1){
+	      tagArr.splice(index, 1);
+	    }
+	    return tagArr.join(',')
+	  }
+
 	render() {
 		const { activeItem, modalBoxOpen } = this.state
+		const queryTag = this.props.queryTag
 		let tagListBoxClass = this.state.isTagBoxOpen ? 'open-tag-box' : 'close-tag-box'
 		return (
 			<div className="topic-navbar">
@@ -192,7 +202,9 @@ class TopicNavbar extends Component {
 
 						{this.state.tagArray.length > 0 ? this.state.tagArray.map((tag, index)=> (
 								<div key={index}>
-									<Link href={`/topic/${tag.tagslug}`}><a>{tag.label}</a></Link>
+									<Link href={queryTag === tag.tagslug ? '/latest-leaves' : `/topic/${queryTag !== "Latest Leaves" ? (!queryTag.includes(tag.tagslug) ? queryTag+','+tag.tagslug : this.removeActiveTag(queryTag, tag.tagslug)) : tag.tagslug}`}>
+				                        <a className={tag.active ? 'tag-active' : ''}>{tag.label}</a>
+			                      	</Link>
 								</div>
 							)): ''}
 					</div>
