@@ -799,6 +799,8 @@ class CardList extends React.Component {
         .content-meta h2{
           padding:0;
           margin: 0;
+          font-size: 2.5rem;
+          line-height: 2.5rem;
         }
 
         .content-meta ul {
