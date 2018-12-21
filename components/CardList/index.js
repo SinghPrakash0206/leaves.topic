@@ -58,7 +58,8 @@ class CardList extends React.Component {
       readerSelectArray: [],
       mobileView: false,
       listOpen: false,
-      readerMinimize: false
+      readerMinimize: false,
+      showTabPopup: false
     };
   }
 
@@ -484,8 +485,7 @@ class CardList extends React.Component {
     this.setState({readerMinimize: this.state.readerMinimize ? false : true})
   }
 
-  selectReaderTab = (e) => {
-    const topicId = e.target.value
+  selectReaderTab = (topicId) => {
     const activeTabs = this.state.activeTabs
     const index = activeTabs.findIndex(x => x.id == topicId);
     this.setState({activeRead: activeTabs[index]})
@@ -498,6 +498,11 @@ class CardList extends React.Component {
       tagArr.splice(index, 1);
     }
     return tagArr.join(',')
+  }
+
+  openMobileTabs = () => {
+    const tabPopup = this.state.showTabPopup ? false : true
+    this.setState({ showTabPopup: tabPopup})
   }
 
   render(props) {
@@ -707,13 +712,29 @@ class CardList extends React.Component {
           {activeTabs.length > 0 && this.state.mobileView ? 
           <div className={ this.state.readerMinimize ? "mobile-reader" : "mini-reader" } >
                   <div className="reader-inner" >
+                  {this.state.showTabPopup ? 
+                    <div className="mobile-tab-popup" onClick={this.openMobileTabs.bind(null)}>
+                      <div className="tab-popup-inner">
+                      {this.state.activeTabs ? this.state.activeTabs.map((tab, index) => (
+                        <div className="mobile-popup-tab">
+                          <div className="mobile-popup-title" onClick={this.selectReaderTab.bind(null, tab.id)}>        {tab.title}
+                          </div>
+                          <div className="mobile-tab-remove" onClick={this.closeTab.bind(null, tab, index)}>x</div>
+                        </div>
+                      )): ''}
+                      </div>
+                    </div> : 
+                  ''}
+                  
                   <div className="mobile-reader-head">
                   <div className="mobile-reader-tabs">
-                  <select onChange={this.selectReaderTab.bind(this)}>
+                  {activeRead ? <div className="mobile-tab-head" onClick={this.openMobileTabs.bind(null)}>{activeRead.title}</div>: ''}
+
+                  {/* <select onChange={this.selectReaderTab.bind(this)}>
                   {this.state.activeTabs ? this.state.activeTabs.map((tab, index) => (
                     tab.activeTab ? <option key={tab.id} value={tab.id} id={index} index={index} selected>{tab.title}</option> : <option key={tab.id} value={tab.id}>{tab.title}</option>
                   )): ''}
-                  </select>
+                  </select> */}
                   </div>
                   <div className="head-icons">{this.state.readerMinimize ? <Icon name="window minimize" onClick={this.miniMobile.bind(this)}/> : <Icon name="window maximize outline" onClick={this.miniMobile.bind(this)}/>}</div>
                   </div>
@@ -988,6 +1009,50 @@ class CardList extends React.Component {
           display: grid;
           grid-template-columns: 90% 10%;
           align-items: center;
+        }
+
+        .mobile-tab-head {
+          padding: 8px;
+          font-size: 1.2rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .mobile-tab-popup {
+          position: absolute;
+          height: 100vh;
+          width: 100%;
+          background-color: rgba(0,0,0,0.2)
+        }
+
+        .mobile-popup-tab .mobile-popup-title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          padding: 5px;
+        }
+
+        .mobile-popup-tab {
+          display: grid;
+          grid-template-columns: auto 40px;
+          border: 1px solid #333;
+        }
+
+        .mobile-popup-tab .mobile-tab-remove {
+          font-size: 1.5rem;
+          text-align: center;
+          background-color: #eee;
+          color: #000;
+        }
+
+        .tab-popup-inner {
+          background-color: #fff;
+          position: relative;
+          margin: 3rem;
+          max-height: 60%;
+          overflow-y: scroll;
+          z-index: 9999;
         }
 
         .mobile-reader-tabs select {
