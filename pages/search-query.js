@@ -33,6 +33,7 @@ class Search extends React.Component {
 
 		const tagRes = await fetch(process.env.LEAVES_API_URL + 'api/tags?access_token='+process.env.LEAVES_API_ACCESSTOKEN)
 		const tagData = await tagRes.json()
+
 		for (var i = 0; i < tagData.length; i++) {
 			tagData[i]['tagslug'] = tagData[i].label.split('.').join('-')
 			tagData[i]['title'] = tagData[i].label.split('.').join(' ')
@@ -65,7 +66,7 @@ class Search extends React.Component {
 	render(){
 		return(
 			<div>
-				<TopicNavbar/>				
+				<TopicNavbar {...this.props}/>				
 				<Layout title="Searching">
 					<CardList data={this.props} />				
 				</Layout>
