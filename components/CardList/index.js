@@ -606,8 +606,8 @@ class CardList extends React.Component {
                           <div className="title">{topic.title}</div>
                           <div className="domain_name">{topic.domain_name}</div>
                           <ul className="leaves-meta">
+                            <li><Icon name="user"/> {topic.user_name}</li>
                             <li><Icon name="calendar outline"/> {convertDate(topic.created_at)}</li>
-                            <li><Icon name="file alternate outline"/> Read</li>
                           </ul>                       
                         </div>
                     </div>
@@ -676,8 +676,8 @@ class CardList extends React.Component {
                       <small>{activeRead.domain_name}</small>
                       <ul>
                         <li><Icon name="user"/> {activeRead.user_name}</li>
-                        <li><Icon name="linkify"/> <a href={activeRead.url}>link</a></li>
                         <li><Icon name="calendar alternate"/> {convertDate(activeRead.created_at)}</li>
+                        <li><Icon name="linkify"/> <a href={activeRead.url} target="_blank">link</a></li>
                       </ul>
                     </div>
                     }
@@ -747,8 +747,8 @@ class CardList extends React.Component {
                       <small>{activeRead.domain_name}</small>
                       <ul>
                         <li><Icon name="user"/> {activeRead.user_name}</li>
-                        <li><Icon name="linkify"/> <a href={activeRead.url}>link</a></li>
                         <li><Icon name="calendar alternate"/> {convertDate(activeRead.created_at)}</li>
+                        <li><Icon name="linkify"/> <a href={activeRead.url} target="_blank">link</a></li>
                       </ul>
                     </div>
                     }
