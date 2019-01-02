@@ -608,6 +608,7 @@ class CardList extends React.Component {
                           <ul className="leaves-meta">
                             <li><Icon name="user"/> {topic.user_name}</li>
                             <li><Icon name="calendar outline"/> {convertDate(topic.created_at)}</li>
+                            <li><Icon name="linkify"/> <a href={topic.url} target="_blank">link</a></li>
                           </ul>                       
                         </div>
                     </div>
