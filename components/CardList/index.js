@@ -197,12 +197,12 @@ class CardList extends React.Component {
     pageNumber++
     var url;
     if(queryTag === "Latest Leaves"){
-      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&order=desc&page=1&sort=created&perPage=20&page='+pageNumber
+      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&order=desc&page=1&sort=created&perPage=24&page='+pageNumber
     }else if(type === "searching"){
-      url = 'http://stage.leaves.anant.us/solr/?q='+queryTag+'&rows=20&start='+ (pageNumber-1)*20
+      url = 'http://stage.leaves.anant.us/solr/?q='+queryTag+'&rows=24&start='+ (pageNumber-1)*24
     }
     else {
-      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=20&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
+      url = process.env.LEAVES_API_URL + 'api/entries?access_token='+process.env.LEAVES_API_ACCESSTOKEN+'&perPage=24&order=desc&page='+pageNumber+'&sort=created&tags=' + queryTag
     }
     var combinedArray;
     axios.get(url)
@@ -677,7 +677,7 @@ class CardList extends React.Component {
                       <small>{activeRead.domain_name}</small>
                       <ul>
                         <li><Icon name="user"/> {activeRead.user_name}</li>
-                        <li><Icon name="calendar alternate"/> {convertDate(activeRead.created_at)}</li>
+                        <li><Icon name="calendar alternate outline"/> {convertDate(activeRead.created_at)}</li>
                         <li><Icon name="linkify"/> <a href={activeRead.url} target="_blank">link</a></li>
                       </ul>
                     </div>
@@ -823,6 +823,8 @@ class CardList extends React.Component {
           margin: 0;
           font-size: 2.5rem;
           line-height: 2.5rem;
+          font-weight: 500;
+          font-family: 'Questrial', sans-serif;
         }
 
         .content-meta ul {
@@ -856,8 +858,10 @@ class CardList extends React.Component {
              padding: 0;
              list-style: none;
              margin: 0;
-             opacity: 0.6 
         }
+        .leaves-meta a{
+          color: #000;
+     }
          .leaves-meta li {
              display: inline-block;
              padding: 5px 5px 5px 0px;
@@ -909,7 +913,7 @@ class CardList extends React.Component {
         }
          .card-container .cards {
              display: grid;
-             grid-gap: 20px;
+             grid-gap: 10px;
              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
              padding: 10px;
              background-color: #eeeeee;
